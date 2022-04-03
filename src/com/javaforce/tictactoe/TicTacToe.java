@@ -6,24 +6,28 @@ import java.awt.*;
 
 public class TicTacToe {
 
-    private static int boardSize = 600;
+    private static int BoardWidth = 600;
+    private static int BoardHeight = 800;
     private static Color boardColor = Color.black;
-    private static int squareSize = (boardSize / 3) - 4;
+    private static int squareSize = (BoardWidth / 3);
     private static Color squareColor = Color.white;
-
     private static Border border = BorderFactory.createLineBorder(Color.black);
 
     public static void main(String[] args) {
         Game game = new Game();
     }
 
-    public static int getBoardSize() {
-        return boardSize;
+    public static int getBoardWidth() {
+        return BoardWidth;
     }
 
-    public static void setBoardSize(int boardSize) {
-        TicTacToe.boardSize = boardSize;
+    public static void setBoardWidth(int boardWidth) {
+        TicTacToe.BoardWidth = boardWidth;
     }
+
+    public static int getBoardHeight() { return BoardHeight; }
+
+    public static void setBoardHeight(int boardHeight) { BoardHeight = boardHeight; }
 
     public static Border getBorder() {
         return border;
