@@ -6,7 +6,7 @@ import java.util.TreeMap;
 public class PlayerFactory {
 
     // FIELDS \\
-    private static Map<Integer, Player> playerMap = new TreeMap<>();
+    private static final Map<String, Player> playerMap = new TreeMap<>();
     private static int playerCounter;
 
     private PlayerFactory () {
@@ -18,15 +18,20 @@ public class PlayerFactory {
 
         Player player = null;
 
-        if (playerMap.isEmpty()) {
+        if(playerMap.size() > 1) { // Once we have two players we won't be able to create anymore.
+            System.out.println(playerMap);
+            throw new IllegalArgumentException("Error: There are already two players.");
+        }
+
+        if (playerMap.isEmpty()) { // If player map empty, create player one.
             player = new Player(name, pieceType);
             playerCounter++;
-            playerMap.put(playerCounter, player);
-        } else if (!playerMap.get(1).getPieceType().equals(pieceType)){
+            playerMap.put("Player-" + playerCounter, player);
+        } else if (!playerMap.get("Player-1").getPieceType().equals(pieceType)){ // If map is not empty and the chosen PieceType is not already taken, make player two.
             player = new Player(name, pieceType);
             playerCounter++;
-            playerMap.put(playerCounter, player);
-        } else {
+            playerMap.put("Player-" + playerCounter, player);
+        } else { // Prevent players from choosing same piece type.
             throw new IllegalArgumentException("Error: The following option of ["
                     + pieceType + "] has already been taken." );
         }
@@ -35,7 +40,7 @@ public class PlayerFactory {
     }
 
     // GETTERS & SETTERS \\
-    public static Map<Integer, Player> getPlayerMap() {
+    public static Map<String, Player> getPlayerMap() {
         return playerMap;
     }
 }

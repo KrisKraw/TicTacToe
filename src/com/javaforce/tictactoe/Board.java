@@ -17,6 +17,7 @@ public class Board implements MouseListener {
     private static ImageIcon xImg;
     private static ImageIcon oImg;
     private static PieceType currentPiece = PieceType.X;
+
     private PieceType gameWinner;
     private boolean gameOver = false;
     private int[] winningRow;
@@ -26,6 +27,10 @@ public class Board implements MouseListener {
     private Map<Integer,Player> players = new HashMap<>();
     private JTextField inputedPlayerName = new JTextField(10);
     ;
+
+    private static Player playerOne = PlayerFactory.getPlayerMap().get("Player-1");
+    private static Player playerTwo = PlayerFactory.getPlayerMap().get("Player-2");
+    private static Player currentPlayer = playerOne;
 
     public Board(JFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -222,15 +227,17 @@ public class Board implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        added_splash_screen_and_name_prompts
         String clickedObjectName = ((JComponent) e.getSource()).getName();
         System.out.println("clicked: " + clickedObjectName);
         if(!gameOver && !getDraw() && clickedObjectName.matches("[0-9]*[0-9]+$")) {
             boolean winner = false;
             System.out.println(getCurrentPiece() + " Clicked square " + clickedObjectName);
             Integer location = Integer.valueOf(clickedObjectName);
+
             JPanel holder = squares.get(location).getHolder();
             squares.get(location).setOwner(Board.getCurrentPiece());
-            JLabel imageHolder;
+            JLabel imageHolder = null;
             winner = isWinner();
             if (Board.getCurrentPiece() == PieceType.O) {
                 imageHolder = new JLabel(Board.getoImg());
@@ -239,6 +246,7 @@ public class Board implements MouseListener {
                 imageHolder = new JLabel(Board.getxImg());
                 Board.setCurrentPiece(PieceType.O);
             }
+
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
             imageHolder.setVerticalAlignment(JLabel.CENTER);
             holder.add(imageHolder);

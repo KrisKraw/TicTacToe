@@ -6,7 +6,7 @@ import java.awt.*;
 public class Game {
 
     private JFrame gameFrame;
-    private Board board;
+    private BoardVersion3 board;
     private SplashScreen SplashScreen;
 
     public Game() {
@@ -14,6 +14,11 @@ public class Game {
     }
 
     public void initGame() {
+
+        /* Added */
+        PlayerFactory.createPlayer("Ryan", PieceType.X); // Will need to use player input here for values to pass in.
+        PlayerFactory.createPlayer("Tim", PieceType.O); // Will need to use player input here for values to pass in.
+
         gameFrame = new JFrame("TicTacToe by JavaForce");
         gameFrame.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
         gameFrame.setLayout(new FlowLayout());
@@ -29,9 +34,13 @@ public class Game {
         } catch(Exception e) { e.printStackTrace(); } ;
         splashScreen.hideLogo();
 
-        board = new Board(gameFrame);
+        board = new BoardVersion3(gameFrame);
         board.initNewBoard();
+        added_splash_screen_and_name_prompts
         board.initControlPanel();
+
+        /*board = new BoardV2(gameFrame);
+        board.initNewBoard();*/
 
         board.boardScrambler.start();
 
