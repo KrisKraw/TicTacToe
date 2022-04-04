@@ -19,7 +19,7 @@ public class Board implements MouseListener {
     private JPanel boardPanel;
     private Map<Integer,Square> squares;
     private static ImageIcon xImg;
-    private static ImageIcon oImg;
+    private static ImageIcon X1Img;
     private static PieceType currentPiece = PieceType.X;
     private PieceType gameWinner;
     private boolean gameOver = false;
@@ -48,7 +48,7 @@ public class Board implements MouseListener {
         gameFrame.add(boardPanel);
 
         setxImg(createPiece("x"));
-        setoImg(createPiece("o"));
+        setoImg(createPiece("X1"));
     }
 
     public ImageIcon createPiece(String piece) {
@@ -118,12 +118,12 @@ public class Board implements MouseListener {
             squares.get(location).setOwner(Board.getCurrentPiece());
             JLabel imageHolder;
             winner = isWinner();
-            if (Board.getCurrentPiece() == PieceType.O) {
+            if (Board.getCurrentPiece() == PieceType.X1) {
                 imageHolder = new JLabel(Board.getoImg());
                 Board.setCurrentPiece(PieceType.X);
             } else {
                 imageHolder = new JLabel(Board.getxImg());
-                Board.setCurrentPiece(PieceType.O);
+                Board.setCurrentPiece(PieceType.X1);
             }
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
             imageHolder.setVerticalAlignment(JLabel.CENTER);
@@ -186,11 +186,11 @@ public class Board implements MouseListener {
     }
 
     public static ImageIcon getoImg() {
-        return oImg;
+        return X1Img;
     }
 
     public static void setoImg(ImageIcon oImg) {
-        Board.oImg = oImg;
+        Board.X1Img = oImg;
     }
 
     public static PieceType getCurrentPiece() {

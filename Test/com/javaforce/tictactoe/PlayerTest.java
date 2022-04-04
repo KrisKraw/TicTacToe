@@ -11,7 +11,7 @@ public class PlayerTest {
     @Test
     public void createPlayer_shouldInitializeNewPlayer_whenNewPlayerInstantiated() {
         PlayerFactory.createPlayer("Ryan", PieceType.X);
-        PlayerFactory.createPlayer("Bryan", PieceType.O);
+        PlayerFactory.createPlayer("Bryan", PieceType.X1);
         PlayerFactory.getPlayerMap().get(1).win();
         PlayerFactory.getPlayerMap().forEach((k, v) -> System.out.println(v));
         PlayerFactory.getPlayerMap().get(1).win();
@@ -43,7 +43,7 @@ public class PlayerTest {
 
     @Test
     public void testPlayer_IdShouldBeUnique_whenCreatingSeparatePlayers() {
-        PlayerFactory.createPlayer("Jake", PieceType.O);
+        PlayerFactory.createPlayer("Jake", PieceType.X1);
         PlayerFactory.createPlayer("John", PieceType.X);
     }
 

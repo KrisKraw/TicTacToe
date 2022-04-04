@@ -2,6 +2,6 @@ package com.javaforce.tictactoe;
 
 public enum PieceType {
     X,
-    O,
+    X1,
     E
 }
