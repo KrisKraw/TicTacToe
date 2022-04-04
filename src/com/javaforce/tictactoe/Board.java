@@ -21,10 +21,15 @@ public class Board implements MouseListener {
     private static ImageIcon xImg;
     private static ImageIcon oImg;
     private static PieceType currentPiece = PieceType.X;
+
     private PieceType gameWinner;
     private boolean gameOver = false;
     private int[] winningRow;
     private BlinkSquare blinkSquare = new BlinkSquare();
+
+    private static Player playerOne = PlayerFactory.getPlayerMap().get("Player-1");
+    private static Player playerTwo = PlayerFactory.getPlayerMap().get("Player-2");
+    private static Player currentPlayer = playerOne;
 
     public Board(JFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -110,13 +115,13 @@ public class Board implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(!gameOver) {
+        Integer location = Integer.valueOf(((JPanel) e.getSource()).getName());
+        if(!gameOver && squares.get(location).getOwner() == PieceType.E) { // should check if square that is click on has already been taken.
             boolean winner = false;
             System.out.println(getCurrentPiece() + " Clicked square " + ((JPanel) e.getSource()).getName());
-            Integer location = Integer.valueOf(((JPanel) e.getSource()).getName());
             JPanel holder = squares.get(location).getHolder();
             squares.get(location).setOwner(Board.getCurrentPiece());
-            JLabel imageHolder;
+            JLabel imageHolder = null;
             winner = isWinner();
             if (Board.getCurrentPiece() == PieceType.O) {
                 imageHolder = new JLabel(Board.getoImg());
@@ -125,6 +130,7 @@ public class Board implements MouseListener {
                 imageHolder = new JLabel(Board.getxImg());
                 Board.setCurrentPiece(PieceType.O);
             }
+
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
             imageHolder.setVerticalAlignment(JLabel.CENTER);
             holder.add(imageHolder);
