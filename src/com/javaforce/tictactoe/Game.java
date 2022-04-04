@@ -14,6 +14,11 @@ public class Game {
     }
 
     public void initGame() {
+
+        /* Added */
+        PlayerFactory.createPlayer("Ryan", PieceType.X); // Will need to use player input here for values to pass in.
+        PlayerFactory.createPlayer("Tim", PieceType.O); // Will need to use player input here for values to pass in.
+
         gameFrame = new JFrame("TicTacToe by JavaForce");
         gameFrame.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
         gameFrame.setLayout(new FlowLayout());
@@ -23,6 +28,8 @@ public class Game {
 
         board = new BoardVersion3(gameFrame);
         board.initNewBoard();
+        /*board = new BoardV2(gameFrame);
+        board.initNewBoard();*/
 
         gameFrame.setVisible(true);
 
