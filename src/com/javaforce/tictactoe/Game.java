@@ -6,7 +6,7 @@ import java.awt.*;
 public class Game {
 
     private JFrame gameFrame;
-    private Board board;
+    private BoardVersion3 board;
     private SplashScreen SplashScreen;
 
     public Game() {
@@ -26,7 +26,7 @@ public class Game {
         gameFrame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        board = new Board(gameFrame);
+        board = new BoardVersion3(gameFrame);
         board.initNewBoard();
         /*board = new BoardV2(gameFrame);
         board.initNewBoard();*/
