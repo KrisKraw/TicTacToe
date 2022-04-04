@@ -1,10 +1,9 @@
 package com.javaforce.tictactoe;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class PlayerTest {
 
@@ -12,10 +11,6 @@ public class PlayerTest {
     public void createPlayer_shouldInitializeNewPlayer_whenNewPlayerInstantiated() {
         PlayerFactory.createPlayer("Ryan", PieceType.X);
         PlayerFactory.createPlayer("Bryan", PieceType.O);
-        PlayerFactory.getPlayerMap().get(1).win();
-        PlayerFactory.getPlayerMap().forEach((k, v) -> System.out.println(v));
-        PlayerFactory.getPlayerMap().get(1).win();
-        PlayerFactory.getPlayerMap().forEach((k, v) -> System.out.println(v));
         for (Map.Entry player : PlayerFactory.getPlayerMap().entrySet()) {
             System.out.println(player);
         }
@@ -28,23 +23,23 @@ public class PlayerTest {
     }
 
     @Test
-    public void test() {
-        Random rand = new Random();
-        for (int i = 0; i < 50; i++) System.out.println(rand.nextInt(20 - 5 + 1) + 5);
-
-        Map<Integer,String > newMap = new HashMap<>();
-        newMap.put(1,"Ryan");
-        newMap.put(2,"Jake");
-        newMap.put(3,"Bryan");
-        for (Map.Entry item : newMap.entrySet()) {
-            System.out.println(item);
-        }
+    public void testCreatePlayerOne_IdShouldBe1_whenCreatingPlayerOne() {
+        Player playerOne = PlayerFactory.createPlayer("Jake", PieceType.O);
+        assertEquals(playerOne.getPlayerId(), 1);
     }
 
     @Test
-    public void testPlayer_IdShouldBeUnique_whenCreatingSeparatePlayers() {
-        PlayerFactory.createPlayer("Jake", PieceType.O);
-        PlayerFactory.createPlayer("John", PieceType.X);
+    public void testCreatePlayerTwo_IdShouldBe2_whenCreatingPlayerTwo() {
+        Player playerOne = PlayerFactory.createPlayer("Ryan", PieceType.X); // Create playerOne
+        Player playerTwo = PlayerFactory.createPlayer("Jake", PieceType.O); // Create playerTwo
+        assertEquals(playerTwo.getPlayerId(), 2);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testPlayerLimit_shouldOnlyAllowTwoPlayersMax_whenUsingCreatePlayerMethod() {
+        PlayerFactory.createPlayer("Ryan", PieceType.X); // Create playerOne
+        PlayerFactory.createPlayer("Jake", PieceType.O); // Create playerTwo
+        PlayerFactory.createPlayer("Josh", PieceType.E); // Create playerThree
     }
 
 
