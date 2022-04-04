@@ -17,16 +17,34 @@ public class Game {
         gameFrame = new JFrame("TicTacToe by JavaForce");
         gameFrame.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
         gameFrame.setLayout(new FlowLayout());
-        gameFrame.setBackground(TicTacToe.getBoardColor());
+        gameFrame.getContentPane().setBackground(Color.WHITE);
         gameFrame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setVisible(true);
+
+        SplashScreen splashScreen = new SplashScreen(gameFrame);
+        splashScreen.showLogo();
+        try {
+            Thread.sleep(3000);
+        } catch(Exception e) { e.printStackTrace(); } ;
+        splashScreen.hideLogo();
 
         board = new Board(gameFrame);
         board.initNewBoard();
+        board.initControlPanel();
 
-        gameFrame.setVisible(true);
+        board.boardScrambler.start();
 
-        //Board.SplashScreen splashScreen = new Board.SplashScreen();
-        //splashScreen.start();
+        board.showPlayButton();
+
+        //boardScrambler.showBoardScrambler = false;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }
