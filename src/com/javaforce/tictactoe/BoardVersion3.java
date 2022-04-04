@@ -74,7 +74,7 @@ public class BoardVersion3 implements MouseListener {
         int count;
         boolean winner = false;
 
-        // Horizontal Win Loop
+        // Horizontal Win Loop.
         for (int i = 0; i < 3; i++) {
             count = 0;
             for (int j = 1 + 3 * i; j <= 3 + 3 * i; j++) {
@@ -88,7 +88,7 @@ public class BoardVersion3 implements MouseListener {
             }
         }
 
-        // Vertical Win Loop
+        // Vertical Win Loop.
         for (int i = 0; i < 3; i++) {
             count = 0;
             for (int j = 1 + i; j <= 9; j += 3) {
@@ -102,7 +102,7 @@ public class BoardVersion3 implements MouseListener {
             }
         }
 
-        // Diagonal Win Loop
+        // Diagonal Win Loop.
         count = 0;
         for (int j = 1; j <= 9; j += 4) {
             if (squares.get(j).getOwner() != PieceType.E) {
