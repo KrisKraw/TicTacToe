@@ -199,13 +199,15 @@ public class Game implements MouseListener {
         boardScrambler.showBoardScrambler = false;
         setBoard();
         clearPanel(statusPanel);
-        showCurrentPlayer(1);
+        showCurrentPlayer();
     }
 
-    public void showCurrentPlayer(int playerId) {
+    public void showCurrentPlayer() {
 
-        String playerName = PlayerFactory.getPlayerMap().get(playerId).getPlayerName();
-        ImageIcon playerPiece = (PlayerFactory.getPlayerMap().get(playerId).getPieceType()).getImageIcon();
+        board.setNextCurrentPlayer();
+
+        String playerName = board.getCurrentPlayer().getPlayerName();
+        ImageIcon playerPiece = (board.getCurrentPlayer().getPieceType()).getMediumImage();
 
         JLabel pieceHolder = new JLabel(playerPiece);
         JLabel playerNameHolder = new JLabel(playerName + " your up ");
@@ -215,6 +217,11 @@ public class Game implements MouseListener {
 
         statusPanel.revalidate();
         statusPanel.repaint();
+    }
+
+    public void gameOver() {
+        System.out.println("!! " + board.getCurrentPlayer().getPlayerName() + " YOU WON !!");
+        System.out.println("GAME OVER");
     }
 
     @Override
@@ -230,9 +237,9 @@ public class Game implements MouseListener {
             JPanel holder = board.getSquares().get(location).getHolder();
             board.getSquares().get(location).setOwner(Board.getCurrentPiece());
             JLabel imageHolder;
-            //winner = isWinner();
+            winner = board.isWinner();
             if (Board.getCurrentPiece() == PieceType.O) {
-                imageHolder = new JLabel(get());
+                imageHolder = new JLabel(getLargeXImage());
                 Board.setCurrentPiece(PieceType.X);
             } else {
                 imageHolder = new JLabel(getLargeOImage());
@@ -244,11 +251,13 @@ public class Game implements MouseListener {
             holder.removeMouseListener(this);
             holder.revalidate();
             if (winner) {
-                //gameOver = true;
+                board.setGameOver(true);
                 blinkSquare.start();
-            } //else if(isDraw()) {
-                //setDraw(true);
-            //}
+                gameOver();
+            } else if(board.isDraw()) {
+                board.setDraw(true);
+            }
+            showCurrentPlayer();
         } else if(clickedObjectName.equals("playbutton")) {
             hidePlayButton();
             startNewGame();
@@ -269,16 +278,21 @@ public class Game implements MouseListener {
         }
     }
 
-    public static ImageIcon get() {
+    public static ImageIcon getLargeXImage() {
         return largeXImage;
     }
 
     public void setLargeXImage() {
-        this.largeXImage = createPiece("x", TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight());
+        largeXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
     }
 
     public static ImageIcon getLargeOImage() {
         return largeOImage;
+    }
+
+    public void setLargeOImage() {
+        largeOImage = createPiece("o", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
     }
 
     public static ImageIcon getMediumXImage() {
@@ -286,7 +300,7 @@ public class Game implements MouseListener {
     }
 
     public void setMediumXImage(ImageIcon mediumXImage) {
-        mediumXImage = createPiece("x", TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight());
+        mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
     }
 
     public static ImageIcon getMediumOImage() {
@@ -294,11 +308,23 @@ public class Game implements MouseListener {
     }
 
     public void setMediumOImage(ImageIcon mediumOImage) {
-        mediumXImage = createPiece("x", TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight());
+        mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
     }
 
-    public void setLargeOImage() {
-        largeOImage = createPiece("o", TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight());
+    public static ImageIcon getSmallXImage() {
+        return smallXImage;
+    }
+
+    public void setSmallXImage(ImageIcon smallXImage) {
+        this.mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+    }
+
+    public static ImageIcon getSmallOImage() {
+        return smallOImage;
+    }
+
+    public void setSmallOImage(ImageIcon smallOImage) {
+        this.mediumXImage = createPiece("o", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
     }
 
     public ImageIcon createPiece(String piece, int sizeX, int sizeY) {
@@ -366,9 +392,9 @@ public class Game implements MouseListener {
         public void run() {
             boolean viewable = false;
             while(true) {
-                //for (int i : winningRow) {
-                //    board.getSquares().get(i).getHolder().getComponent(0).setVisible(viewable);
-                //}
+                for (int i : board.getWinningRow()) {
+                    board.getSquares().get(i).getHolder().getComponent(0).setVisible(viewable);
+                }
                 try {
                     Thread.sleep(500);
                 } catch (Exception e) {
@@ -401,7 +427,7 @@ public class Game implements MouseListener {
             while(showBoardScrambler) {
                 try {
                     int whichPiece = random.nextInt(2);
-                    ImageIcon randomPiece = get();
+                    ImageIcon randomPiece = getLargeXImage();
                     if(whichPiece == 0) {
                         randomPiece = getLargeOImage();
                     }

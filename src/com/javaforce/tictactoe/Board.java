@@ -14,14 +14,19 @@ public class Board {
     private boolean draw = false;
     private Map<Integer,Player> players = new HashMap<>();
     private JTextField inputedPlayerName = new JTextField(10);
+    private Player currentPlayer;
 
     public Board(Game game) {
         this.game = game;
         squares = new HashMap<>();
     }
 
-    public void setPlayerInfo(String playerName, PieceType pieceType) {
-
+    public void setNextCurrentPlayer() {
+        if(null == currentPlayer || currentPlayer.getPlayerId() == 1) {
+            currentPlayer = PlayerFactory.getPlayerMap().get(1);
+        } else {
+            currentPlayer = PlayerFactory.getPlayerMap().get(0);
+        }
     }
     public boolean isDraw() {
         return false;
@@ -161,5 +166,13 @@ public class Board {
 
     public void setInputedPlayerName(JTextField inputedPlayerName) {
         this.inputedPlayerName = inputedPlayerName;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }
