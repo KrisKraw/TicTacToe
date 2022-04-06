@@ -19,6 +19,9 @@ public class Game implements MouseListener {
     private Board board;
     private BlinkSquare blinkSquare = new BlinkSquare();
     private static ImageIcon largeXImage;
+    private static ImageIcon largeX1Image;
+    private static ImageIcon mediumX1Image;
+    private static ImageIcon smallX1Image;
     private static ImageIcon largeOImage;
     private static ImageIcon mediumXImage;
     private static ImageIcon mediumOImage;
@@ -26,11 +29,13 @@ public class Game implements MouseListener {
     private static ImageIcon smallOImage;
     private BoardScrambler boardScrambler = new BoardScrambler();
     private JTextField inputedPlayerName = new JTextField();
+    public static boolean diffGameVersion = false;
 
     public Game() {
 
         setLargeXImage();
         setLargeOImage();
+        setLargeX1Image();
         createFrame();
         showSplashScreen();
         createBoardPanel();
@@ -236,10 +241,14 @@ public class Game implements MouseListener {
             JLabel imageHolder = null;
             winner = board.isWinner();
 
+
+
             if (Board.playerOne.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeXImage());
-            } else if (Board.playerTwo.equals(Board.getCurrentPlayer())) {
+            } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && !diffGameVersion) {
                 imageHolder = new JLabel(getLargeOImage());
+            } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && diffGameVersion) {
+                imageHolder = new JLabel(getLargeX1Image());
             }
 
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
@@ -247,12 +256,27 @@ public class Game implements MouseListener {
             holder.add(imageHolder);
             holder.removeMouseListener(this);
             holder.revalidate();
+
             if (winner) {
-                Board.getCurrentPlayer().win();
-                System.out.println(Board.getCurrentPlayer().getWins()); // check to see if win counter is incremented.
+                Player xOnlyWinner;
+                if(winner && !diffGameVersion) {
+                    Board.getCurrentPlayer().win();
+                    System.out.println(Board.getCurrentPlayer().getWins());
+                    System.out.println("winner: " + Board.getCurrentPlayer().getPlayerName() + "  " + winner);
+                } else {
+                    if(Board.getCurrentPlayer().getPlayerId() == 1) {
+                        System.out.println(Board.getCurrentPlayer().getPlayerId());
+                        xOnlyWinner = Board.playerTwo;
+                    } else {
+                        xOnlyWinner = Board.playerOne;
+                    }
+                    xOnlyWinner.win();
+                    System.out.println("winner: " + xOnlyWinner.getPlayerName() + "  " + winner);
+                    System.out.println("PLayer-1: " + Board.playerOne.getWins() + " win; Player-2 " + Board.playerTwo.getWins() + " win;");
+                }
                 // board.setGameOver(true); Commented out to test incrementing wins/repeat games.
                 // blinkSquare.start(); Commented out to test incrementing wins/repeat games.
-                gameOver();
+                // gameOver();
                 setBoard();
                 //TODO: add logic for draw
             } else if(board.isDraw()) {
@@ -268,13 +292,16 @@ public class Game implements MouseListener {
                 PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
             } else {
+                // Change to X1 based on the game type.
                 PieceType userPieceType = PieceType.O;
                 PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
             }
-
             // TODO: Add option for Computer player around here.
 
+            // radio check mark button,
+            // checked means true (other version) unchecked means false (basic version)
+            diffGameVersion = true;
             if(PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();
             }
@@ -287,6 +314,34 @@ public class Game implements MouseListener {
 
     public void setLargeXImage() {
         largeXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+
+    public void setSmallX1Image() {
+        smallX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+    public static ImageIcon getSmallX1Image() {
+        return smallX1Image;
+    }
+
+    public static ImageIcon getMediumX1Image() {
+        return mediumX1Image;
+    }
+
+    public void setMediumX1Image() {
+        mediumX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+    public static ImageIcon getLargeX1Image() {
+        return largeX1Image;
+    }
+
+    public void setLargeX1Image() {
+        largeX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
                 - 20);
     }
 
