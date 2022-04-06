@@ -5,7 +5,8 @@ import javax.swing.*;
 public enum PieceType {
     X(Game.getLargeXImage(),Game.getMediumXImage(),Game.getSmallXImage()),
     O(Game.getLargeOImage(),Game.getMediumOImage(),Game.getSmallOImage()),
-    E(Game.getLargeOImage(),Game.getMediumOImage(),Game.getSmallOImage());
+    E(Game.getLargeOImage(),Game.getMediumOImage(),Game.getSmallOImage()),
+    X1(Game.getLargeXImage(),Game.getMediumXImage(),Game.getSmallXImage()),
 
     public final ImageIcon largeImage;
     public final ImageIcon mediumImage;
