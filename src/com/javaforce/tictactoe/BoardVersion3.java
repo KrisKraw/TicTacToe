@@ -167,6 +167,17 @@ public class BoardVersion3 implements MouseListener {
         return winner;
     }
 
+    public void setSquare(int location) {
+        PieceType piece = getCurrentPiece();
+        squares.get(location).setOwner(piece);
+
+        if (piece == PieceType.X) {
+            setCurrentPiece(PieceType.X1);
+        } else {
+            setCurrentPiece(PieceType.X);
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if(!gameOver) {
