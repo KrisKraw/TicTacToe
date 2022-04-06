@@ -6,7 +6,7 @@ public enum PieceType {
     X(Game.getLargeXImage(),Game.getMediumXImage(),Game.getSmallXImage()),
     O(Game.getLargeOImage(),Game.getMediumOImage(),Game.getSmallOImage()),
     E(Game.getLargeOImage(),Game.getMediumOImage(),Game.getSmallOImage()),
-    X1(Game.getLargeXImage(),Game.getMediumXImage(),Game.getSmallXImage());
+    X1(Game.getLargeX1Image(),Game.getMediumX1Image(),Game.getSmallX1Image());
 
     private final ImageIcon largeImage;
     private final ImageIcon mediumImage;

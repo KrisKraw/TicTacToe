@@ -45,51 +45,162 @@ public class Board {
 
     public boolean isWinner() {
         boolean winner = false;
-        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{1, 4, 7};
+        if(Game.diffGameVersion) {
+            int count;
+            // Horizontal Win Loop.
+            for (int i = 0; i < 3; i++) {
+                count = 0;
+                for (int j = 1 + 3 * i; j <= 3 + 3 * i; j++) {
+                    if (squares.get(j).getOwner() != PieceType.E) {
+                        count++;
+                    }
+                }
+                if (count == 3) {
+                    winner = true;
+                    winningRow = new int[]{1 + 3 * i, 2 + 3 * i, 3 + 3 * i};
+                }
+            }
+
+            // Vertical Win Loop.
+            for (int i = 0; i < 3; i++) {
+                count = 0;
+                for (int j = 1 + i; j <= 9; j += 3) {
+                    if (squares.get(j).getOwner() != PieceType.E) {
+                        count++;
+                    }
+                }
+                if (count == 3) {
+                    winner = true;
+                    winningRow = new int[]{1 + i, 4 + i, 7 + i};
+                }
+            }
+
+            // Diagonal Win Loop.
+            count = 0;
+            for (int j = 1; j <= 9; j += 4) {
+                if (squares.get(j).getOwner() != PieceType.E) {
+                    count++;
+                }
+            }
+            if (count == 3) {
+                winner = true;
+                winningRow = new int[]{1, 5, 9};
+            }
+
+            count = 0;
+            for (int j = 3; j <= 7; j += 2) {
+                if (squares.get(j).getOwner() != PieceType.E) {
+                    count++;
+                }
+            }
+            if (count == 3) {
+                winner = true;
+                winningRow = new int[]{3, 5, 7};
+            }
         }
-        if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{2, 5, 8};
+        else {
+            if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{1, 4, 7};
+            }
+            if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{2, 5, 8};
+            }
+            if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{3, 6, 9};
+            }
+            if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(3).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{1, 2, 3};
+            }
+            if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{4, 5, 6};
+            }
+            if (squares.get(7).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{7, 8, 9};
+            }
+            if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{1, 5, 9};
+            }
+            if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                    && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+                winner = true;
+                winningRow = new int[]{3, 5, 7};
+            }
         }
-        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{3, 6, 9};
+        return winner;
+    }
+
+    public boolean isWinner(boolean diffGameVersion) {
+        int count;
+        boolean winner = false;
+        // Horizontal Win Loop.
+        for (int i = 0; i < 3; i++) {
+            count = 0;
+            for (int j = 1 + 3 * i; j <= 3 + 3 * i; j++) {
+                if (squares.get(j).getOwner() != PieceType.E) {
+                    count++;
+                }
+            }
+            if (count == 3) {
+                winner = true;
+                winningRow = new int[]{1 + 3 * i, 2 + 3 * i, 3 + 3 * i};
+            }
         }
-        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(3).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{1, 2, 3};
+
+        // Vertical Win Loop.
+        for (int i = 0; i < 3; i++) {
+            count = 0;
+            for (int j = 1 + i; j <= 9; j += 3) {
+                if (squares.get(j).getOwner() != PieceType.E) {
+                    count++;
+                }
+            }
+            if (count == 3) {
+                winner = true;
+                winningRow = new int[]{1 + i, 4 + i, 7 + i};
+            }
         }
-        if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{4, 5, 6};
+
+        // Diagonal Win Loop.
+        count = 0;
+        for (int j = 1; j <= 9; j += 4) {
+            if (squares.get(j).getOwner() != PieceType.E) {
+                count++;
+            }
         }
-        if (squares.get(7).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
-            winner = true;
-            winningRow = new int[]{7, 8, 9};
-        }
-        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+        if (count == 3) {
             winner = true;
             winningRow = new int[]{1, 5, 9};
         }
-        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
-                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+
+        count = 0;
+        for (int j = 3; j <= 7; j += 2) {
+            if (squares.get(j).getOwner() != PieceType.E) {
+                count++;
+            }
+        }
+        if (count == 3) {
             winner = true;
             winningRow = new int[]{3, 5, 7};
         }
