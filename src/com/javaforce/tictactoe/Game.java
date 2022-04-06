@@ -138,12 +138,7 @@ public class Game implements MouseListener {
 
     public void setupPlayerInfo() {
 
-        if(statusPanel != null) {
-            Component[] componentsToRemove = statusPanel.getComponents();
-            for (Component componentToRemove : componentsToRemove) {
-                statusPanel.remove(0);
-            }
-        }
+        clearPanel(statusPanel);
 
         try {
             JLabel desc = new JLabel("enter " + "" + " player name");
@@ -217,6 +212,8 @@ public class Game implements MouseListener {
 
         statusPanel.revalidate();
         statusPanel.repaint();
+
+
     }
 
     public void gameOver() {
@@ -235,25 +232,29 @@ public class Game implements MouseListener {
             boolean winner = false;
             Integer location = Integer.valueOf(clickedObjectName);
             JPanel holder = board.getSquares().get(location).getHolder();
-            board.getSquares().get(location).setOwner(Board.getCurrentPiece());
-            JLabel imageHolder;
+            board.getSquares().get(location).setOwner(Board.getCurrentPlayer().getPieceType());
+            JLabel imageHolder = null;
             winner = board.isWinner();
-            if (Board.getCurrentPiece() == PieceType.O) {
+
+            if (Board.playerOne.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeXImage());
-                Board.setCurrentPiece(PieceType.X);
-            } else {
+            } else if (Board.playerTwo.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeOImage());
-                Board.setCurrentPiece(PieceType.O);
             }
+
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
             imageHolder.setVerticalAlignment(JLabel.CENTER);
             holder.add(imageHolder);
             holder.removeMouseListener(this);
             holder.revalidate();
             if (winner) {
-                board.setGameOver(true);
-                blinkSquare.start();
+                Board.getCurrentPlayer().win();
+                System.out.println(Board.getCurrentPlayer().getWins()); // check to see if win counter is incremented.
+                // board.setGameOver(true); Commented out to test incrementing wins/repeat games.
+                // blinkSquare.start(); Commented out to test incrementing wins/repeat games.
                 gameOver();
+                setBoard();
+                //TODO: add logic for draw
             } else if(board.isDraw()) {
                 board.setDraw(true);
             }
@@ -262,15 +263,17 @@ public class Game implements MouseListener {
             hidePlayButton();
             startNewGame();
         } else if(clickedObjectName.equals("nextButtonHolder")) {
-            if(PlayerFactory.getPlayerMap().size() < 2) {
+            if(PlayerFactory.getPlayerMap().size() == 0) {
                 PieceType userPieceType = PieceType.X;
-                if(PlayerFactory.getPlayerMap().size() == 1) {
-                    userPieceType = PieceType.O;
-                }
                 PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
-
+                System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+            } else {
+                PieceType userPieceType = PieceType.O;
+                PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
             }
+
+            // TODO: Add option for Computer player around here.
 
             if(PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();

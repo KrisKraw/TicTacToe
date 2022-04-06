@@ -6,15 +6,17 @@ import java.util.*;
 public class Board {
 
     private Game game;
-    private Map<Integer,Square> squares;
-    private static PieceType currentPiece = PieceType.X;
-    private PieceType gameWinner;
+    private Map<Integer, Square> squares;
+    private static PieceType currentPiece = PieceType.O;
+    private Player gameWinner;
     private boolean gameOver = false;
     private int[] winningRow;
     private boolean draw = false;
-    private Map<Integer,Player> players = new HashMap<>();
+    private Map<Integer, Player> players = new HashMap<>();
     private JTextField inputedPlayerName = new JTextField(10);
-    private Player currentPlayer;
+    private static Player currentPlayer;
+    public static Player playerOne;// ADDED: Used for our checks now, instead of PieceType
+    public static Player playerTwo; // ADDED: Used for our checks now, instead of PieceType.
 
     public Board(Game game) {
         this.game = game;
@@ -22,111 +24,86 @@ public class Board {
     }
 
     public void setNextCurrentPlayer() {
-        if(null == currentPlayer || currentPlayer.getPlayerId() == 1) {
-            currentPlayer = PlayerFactory.getPlayerMap().get(1);
+
+        playerOne = PlayerFactory.playerOne;
+        playerTwo = PlayerFactory.playerTwo;
+
+        // Swaps players to opposite player
+        if (playerOne.equals(getCurrentPlayer())) {
+            setCurrentPlayer(playerTwo);
+        } else if (playerTwo.equals(getCurrentPlayer())) {
+            setCurrentPlayer(playerOne);
         } else {
-            currentPlayer = PlayerFactory.getPlayerMap().get(0);
+            setCurrentPlayer(playerOne); // If no player yet (start of game) current player is set to playerOne.
         }
+
     }
+
     public boolean isDraw() {
         return false;
     }
 
     public boolean isWinner() {
         boolean winner = false;
-        if(squares.get(5).getOwner() == getCurrentPiece()) {
-            if(squares.get(1).getOwner() == getCurrentPiece() && squares.get(9).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{1,5,9};
-            } else if(squares.get(3).getOwner() == getCurrentPiece() && squares.get(7).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{3,5,7};
-            } else if(squares.get(2).getOwner() == getCurrentPiece() && squares.get(8).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{2,5,8};
-            } else if(squares.get(4).getOwner() == getCurrentPiece() && squares.get(6).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{4,5,6};
-            }
-        } else if(squares.get(1).getOwner() == getCurrentPiece()) {
-            if(squares.get(2).getOwner() == getCurrentPiece() && squares.get(3).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{1,2,3};
-            } else if(squares.get(4).getOwner() == getCurrentPiece() && squares.get(7).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{1,4,7};
-            }
-        } else if(squares.get(9).getOwner() == getCurrentPiece()) {
-            if(squares.get(3).getOwner() == getCurrentPiece() && squares.get(6).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{3,6,9};
-            } else if(squares.get(7).getOwner() == getCurrentPiece() && squares.get(8).getOwner() == getCurrentPiece()) {
-                winner = true;
-                winningRow = new int[]{7,8,9};
-            }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 4, 7};
         }
-        System.out.println("winner: " + getCurrentPiece() + "  " + winner);
-        gameWinner = getCurrentPiece();
+        if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{2, 5, 8};
+        }
+        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{3, 6, 9};
+        }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(3).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 2, 3};
+        }
+        if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{4, 5, 6};
+        }
+        if (squares.get(7).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{7, 8, 9};
+        }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 5, 9};
+        }
+        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{3, 5, 7};
+        }
+        System.out.println("winner: " + getCurrentPlayer().getPlayerName() + "  " + winner);
         return winner;
     }
 
-    public boolean isWinner2() {
-        Map<Integer,Integer> maps = new HashMap();
-        maps.put(4,3);
-        maps.put(5,3);
-        maps.put(6,3);
-
-        //for(int i=1;i<9;i=i+3) {
-            for (int i = 1; i < 9; i = i + 3) {
-                for (int ii = 1; ii < 3; ii = ii + 3) {
-                    System.out.println(i + "  " + ii);
-                    if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                        System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                    }
-                }
-            }
-
-        for (int i = 1; i < 4; i++) {
-            for (int ii = 1; ii < 9; ii = ii + 3) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-
-        for (int i = 1; i < 3; i = i + 2) {
-            for (int ii = i; ii <= 9; ii = ii + 4) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-
-        for (int i = 3; i < 4; i = i + 2) {
-            for (int ii = i; ii < 9; ii = ii + 2) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-        //}
-        return false;
+    public boolean getDraw() {
+        return draw;
     }
 
-    public static PieceType getCurrentPiece() {
-        return currentPiece;
+    public void setDraw(boolean draw) {
+        this.draw = draw;
     }
-
-    public static void setCurrentPiece(PieceType currentPiece) {
-        Board.currentPiece = currentPiece;
-    }
-
-    public boolean getDraw() { return draw; }
-
-    public void setDraw(boolean draw) { this.draw = draw; }
 
     public Map<Integer, Square> getSquares() {
         return squares;
@@ -134,14 +111,6 @@ public class Board {
 
     public void setSquares(Map<Integer, Square> squares) {
         this.squares = squares;
-    }
-
-    public PieceType getGameWinner() {
-        return gameWinner;
-    }
-
-    public void setGameWinner(PieceType gameWinner) {
-        this.gameWinner = gameWinner;
     }
 
     public boolean isGameOver() {
@@ -168,11 +137,11 @@ public class Board {
         this.inputedPlayerName = inputedPlayerName;
     }
 
-    public Player getCurrentPlayer() {
+    public static Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
+        Board.currentPlayer = currentPlayer;
     }
 }
