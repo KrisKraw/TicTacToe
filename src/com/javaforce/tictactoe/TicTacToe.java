@@ -15,13 +15,6 @@ public class TicTacToe {
     private static Border border = BorderFactory.createLineBorder(Color.black);
     private static Font gameFont = new Font("Courier", Font.BOLD,30);
 
-    public static BufferedImage resizeImage(BufferedImage oldImage, int newX, int newY) {
-        Image scaledImage = oldImage.getScaledInstance(newX, newY, Image.SCALE_SMOOTH);
-        BufferedImage newImage = new BufferedImage(newX, newY, BufferedImage.TYPE_INT_ARGB);
-        newImage.createGraphics().drawImage(scaledImage, 0, 0 , null);
-        return newImage;
-    }
-
     public static void main(String[] args) {
         Game game = new Game();
     }
