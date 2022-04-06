@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,8 +59,8 @@ public class BoardV2 implements MouseListener {
     public ImageIcon createPiece(String piece) {
         ImageIcon imageIcon = null;
         try {
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(piece + ".png"));
-            BufferedImage image1 = resizeImage(image, TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize() - 20);
+            BufferedImage image = ImageIO.read(new File("resources/" + piece + ".png")); // "resources/o.png"
+            BufferedImage image1 = resizeImage(image, TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize() - 20); //
             imageIcon = new ImageIcon(image1);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -76,36 +77,53 @@ public class BoardV2 implements MouseListener {
 
     public boolean isWinner() { // Changed getCurrentPiece() to getCurrentPlayer().getPieceType() in all checks.
         boolean winner = false;
-        if (squares.get(5).getOwner() == getCurrentPlayer().getPieceType()) {
-            if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType() && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{1, 5, 9};
-            } else if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType() && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{3, 5, 7};
-            } else if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType() && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{2, 5, 8};
-            } else if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType() && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{4, 5, 6};
-            }
-        } else if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()) {
-            if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType() && squares.get(3).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{1, 2, 3};
-            } else if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType() && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{1, 4, 7};
-            }
-        } else if (squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
-            if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType() && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{3, 6, 9};
-            } else if (squares.get(7).getOwner() == getCurrentPlayer().getPieceType() && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
-                winner = true;
-                winningRow = new int[]{7, 8, 9};
-            }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 4, 7};
+        }
+        if (squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{2, 5, 8};
+        }
+        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{3, 6, 9};
+        }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(2).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(3).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 2, 3};
+        }
+        if (squares.get(4).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(6).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{4, 5, 6};
+        }
+        if (squares.get(7).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(8).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{7, 8, 9};
+        }
+        if (squares.get(1).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(9).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{1, 5, 9};
+        }
+        if (squares.get(3).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(5).getOwner() == getCurrentPlayer().getPieceType()
+                && squares.get(7).getOwner() == getCurrentPlayer().getPieceType()) {
+            winner = true;
+            winningRow = new int[]{3, 5, 7};
         }
         System.out.println("winner: " + getCurrentPlayer().getPlayerName() + "  " + winner);
         gameWinner = getCurrentPlayer(); // Just a holder, (does not mean they have won yet, this is used else where.)
