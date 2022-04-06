@@ -1,6 +1,7 @@
 package com.javaforce.tictactoe;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Square {
 
@@ -18,7 +19,7 @@ public class Square {
         holder = new JPanel();
         holder.setName("" + location);
         holder.setSize(TicTacToe.getSquareSize(),TicTacToe.getSquareSize());
-        holder.setBackground(TicTacToe.getSquareColor());
+        holder.setBackground(Color.white);
         return holder;
     }
 

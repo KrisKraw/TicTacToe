@@ -3,6 +3,7 @@ package com.javaforce.tictactoe;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class TicTacToe {
 
@@ -12,6 +13,7 @@ public class TicTacToe {
     private static int squareSize = (BoardWidth / 3);
     private static Color squareColor = Color.white;
     private static Border border = BorderFactory.createLineBorder(Color.black);
+    private static Font gameFont = new Font("Courier", Font.BOLD,30);
 
     public static void main(String[] args) {
         Game game = new Game();
@@ -60,4 +62,8 @@ public class TicTacToe {
     public static void setSquareColor(Color squareColor) {
         TicTacToe.squareColor = squareColor;
     }
+
+    public static Font getGameFont() { return gameFont; }
+
+    public static void setGameFont(Font gameFont) { TicTacToe.gameFont = gameFont; }
 }
