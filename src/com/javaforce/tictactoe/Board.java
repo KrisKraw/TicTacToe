@@ -1,78 +1,35 @@
 package com.javaforce.tictactoe;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-import static javax.print.attribute.standard.Chromaticity.COLOR;
+public class Board {
 
-public class Board implements MouseListener {
-
-    private JFrame gameFrame;
-    private JPanel boardPanel;
+    private Game game;
     private Map<Integer,Square> squares;
-    private static ImageIcon xImg;
-    private static ImageIcon oImg;
     private static PieceType currentPiece = PieceType.X;
-
     private PieceType gameWinner;
     private boolean gameOver = false;
     private int[] winningRow;
-    private BlinkSquare blinkSquare = new BlinkSquare();
+    private boolean draw = false;
+    private Map<Integer,Player> players = new HashMap<>();
+    private JTextField inputedPlayerName = new JTextField(10);
+    private Player currentPlayer;
 
-    private static Player playerOne = PlayerFactory.getPlayerMap().get("Player-1");
-    private static Player playerTwo = PlayerFactory.getPlayerMap().get("Player-2");
-    private static Player currentPlayer = playerOne;
-
-    public Board(JFrame gameFrame) {
-        this.gameFrame = gameFrame;
+    public Board(Game game) {
+        this.game = game;
+        squares = new HashMap<>();
     }
 
-    public void initNewBoard()  {
-
-        boardPanel = new JPanel();
-        boardPanel.setPreferredSize(new Dimension(TicTacToe.getBoardWidth(),TicTacToe.getBoardWidth()));
-        boardPanel.setLayout(new GridLayout(3, 3, 9, 9));
-        boardPanel.setBackground(Color.GREEN);
-
-        squares = new HashMap(9);
-        for(int i=1;i<10;i++) {
-            Square availSquare = new Square(i);
-            availSquare.getHolder().addMouseListener(this);
-            squares.put(i,availSquare);
-            boardPanel.add(availSquare.getHolder());
+    public void setNextCurrentPlayer() {
+        if(null == currentPlayer || currentPlayer.getPlayerId() == 1) {
+            currentPlayer = PlayerFactory.getPlayerMap().get(1);
+        } else {
+            currentPlayer = PlayerFactory.getPlayerMap().get(0);
         }
-
-        gameFrame.add(boardPanel);
-
-        setxImg(createPiece("x"));
-        setoImg(createPiece("o"));
     }
-
-    public ImageIcon createPiece(String piece) {
-        ImageIcon imageIcon = null;
-        try {
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(piece + ".png"));
-            BufferedImage image1 = resizeImage(image, TicTacToe.getSquareSize()-20,  TicTacToe.getSquareSize()-20);
-            imageIcon = new ImageIcon(image1);
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return imageIcon;
-    }
-
-    public BufferedImage resizeImage(BufferedImage oldImage, int newX, int newY) {
-        Image scaledImage = oldImage.getScaledInstance(newX, newY, Image.SCALE_SMOOTH);
-        BufferedImage newImage = new BufferedImage(newX, newY, BufferedImage.TYPE_INT_ARGB);
-        newImage.createGraphics().drawImage(scaledImage, 0, 0 , null);
-        return newImage;
+    public boolean isDraw() {
+        return false;
     }
 
     public boolean isWinner() {
@@ -113,90 +70,50 @@ public class Board implements MouseListener {
         return winner;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Integer location = Integer.valueOf(((JPanel) e.getSource()).getName());
-        if(!gameOver && squares.get(location).getOwner() == PieceType.E) { // should check if square that is click on has already been taken.
-            boolean winner = false;
-            System.out.println(getCurrentPiece() + " Clicked square " + ((JPanel) e.getSource()).getName());
-            JPanel holder = squares.get(location).getHolder();
-            squares.get(location).setOwner(Board.getCurrentPiece());
-            JLabel imageHolder = null;
-            winner = isWinner();
-            if (Board.getCurrentPiece() == PieceType.O) {
-                imageHolder = new JLabel(Board.getoImg());
-                Board.setCurrentPiece(PieceType.X);
-            } else {
-                imageHolder = new JLabel(Board.getxImg());
-                Board.setCurrentPiece(PieceType.O);
+    public boolean isWinner2() {
+        Map<Integer,Integer> maps = new HashMap();
+        maps.put(4,3);
+        maps.put(5,3);
+        maps.put(6,3);
+
+        //for(int i=1;i<9;i=i+3) {
+            for (int i = 1; i < 9; i = i + 3) {
+                for (int ii = 1; ii < 3; ii = ii + 3) {
+                    System.out.println(i + "  " + ii);
+                    if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                        System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                    }
+                }
             }
 
-            imageHolder.setHorizontalAlignment(JLabel.RIGHT);
-            imageHolder.setVerticalAlignment(JLabel.CENTER);
-            holder.add(imageHolder);
-            holder.revalidate();
-            if (winner) {
-                gameOver = true;
-                blinkSquare.start();
-                System.out.println(Arrays.toString(winningRow));
-                System.out.println(gameWinner + " has won the game !");
-            }
-        }
-    }
-
-    class BlinkSquare extends Thread {
-        @Override
-        public void run() {
-            boolean viewable = false;
-            while(true) {
-                for (int i : winningRow) {
-                    squares.get(i).getHolder().getComponent(0).setVisible(viewable);
-                }
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
-
-                }
-                if (viewable) {
-                    viewable = false;
-                } else {
-                    viewable = true;
+        for (int i = 1; i < 4; i++) {
+            for (int ii = 1; ii < 9; ii = ii + 3) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
                 }
             }
         }
-    }
 
-    class SplashScreen extends Thread {
-        @Override
-        public void run() {
-            long fastBlink = 100;
-            boolean viewable = false;
-            while(true) {
-                Random random = new Random(8);
-                int randomSquare = random.nextInt(8)  + 1;
-                System.out.println("randomSquare :" + randomSquare);
-                squares.get(randomSquare).getHolder().getComponent(0).setVisible(true);
-                try { Thread.sleep(fastBlink); } catch (Exception e) { }
-                squares.get(randomSquare).getHolder().getComponent(0).setVisible(false);
-                try { Thread.sleep(fastBlink); } catch (Exception e) { }
+        for (int i = 1; i < 3; i = i + 2) {
+            for (int ii = i; ii <= 9; ii = ii + 4) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                }
             }
         }
-    }
 
-    public static ImageIcon getxImg() {
-        return xImg;
-    }
-
-    public static void setxImg(ImageIcon xImg) {
-        Board.xImg = xImg;
-    }
-
-    public static ImageIcon getoImg() {
-        return oImg;
-    }
-
-    public static void setoImg(ImageIcon oImg) {
-        Board.oImg = oImg;
+        for (int i = 3; i < 4; i = i + 2) {
+            for (int ii = i; ii < 9; ii = ii + 2) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                }
+            }
+        }
+        //}
+        return false;
     }
 
     public static PieceType getCurrentPiece() {
@@ -207,15 +124,55 @@ public class Board implements MouseListener {
         Board.currentPiece = currentPiece;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) { }
+    public boolean getDraw() { return draw; }
 
-    @Override
-    public void mouseReleased(MouseEvent e) { }
+    public void setDraw(boolean draw) { this.draw = draw; }
 
-    @Override
-    public void mouseEntered(MouseEvent e) { }
+    public Map<Integer, Square> getSquares() {
+        return squares;
+    }
 
-    @Override
-    public void mouseExited(MouseEvent e) { }
+    public void setSquares(Map<Integer, Square> squares) {
+        this.squares = squares;
+    }
+
+    public PieceType getGameWinner() {
+        return gameWinner;
+    }
+
+    public void setGameWinner(PieceType gameWinner) {
+        this.gameWinner = gameWinner;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public int[] getWinningRow() {
+        return winningRow;
+    }
+
+    public void setWinningRow(int[] winningRow) {
+        this.winningRow = winningRow;
+    }
+
+    public JTextField getInputedPlayerName() {
+        return inputedPlayerName;
+    }
+
+    public void setInputedPlayerName(JTextField inputedPlayerName) {
+        this.inputedPlayerName = inputedPlayerName;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
 }
