@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +55,8 @@ public class BoardVersion3 implements MouseListener {
     public ImageIcon createPiece(String piece) {
         ImageIcon imageIcon = null;
         try {
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(piece + ".png"));
+//            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(piece + ".png"));
+            BufferedImage image = ImageIO.read(new File("resources/" + piece + ".png"));
             BufferedImage image1 = resizeImage(image, TicTacToe.getSquareSize()-20,  TicTacToe.getSquareSize()-20);
             imageIcon = new ImageIcon(image1);
         } catch(Exception ex) {
