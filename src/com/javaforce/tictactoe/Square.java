@@ -19,7 +19,7 @@ public class Square {
         holder = new JPanel();
         holder.setName("" + location);
         holder.setSize(TicTacToe.getSquareSize(),TicTacToe.getSquareSize());
-        holder.setBackground(Color.white);
+        holder.setBackground(TicTacToe.getSquareColor());
         return holder;
     }
 

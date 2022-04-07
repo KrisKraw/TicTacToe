@@ -2,12 +2,14 @@ package com.javaforce.tictactoe;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import static java.awt.FlowLayout.CENTER;
+import static java.lang.System.exit;
 
 public class Game implements MouseListener {
 
@@ -15,9 +17,8 @@ public class Game implements MouseListener {
     private JPanel splashPanel;
     private JPanel boardPanel;
     private JPanel statusPanel;
-    private SplashScreen SplashScreen;
+    private JPanel exitPanel;
     private Board board;
-    private BlinkSquare blinkSquare = new BlinkSquare();
     private static ImageIcon largeXImage;
     private static ImageIcon largeX1Image;
     private static ImageIcon mediumX1Image;
@@ -27,12 +28,15 @@ public class Game implements MouseListener {
     private static ImageIcon mediumOImage;
     private static ImageIcon smallXImage;
     private static ImageIcon smallOImage;
+    private static ImageIcon alexaIcon;
     private BoardScrambler boardScrambler = new BoardScrambler();
     private JTextField inputedPlayerName = new JTextField();
     public static boolean diffGameVersion = false;
 
     public Game() {
+    }
 
+    public void gameStart() {
         setLargeXImage();
         setLargeOImage();
         setMediumXImage();
@@ -40,58 +44,82 @@ public class Game implements MouseListener {
         setSmallXImage();
         setSmallOImage();
         setLargeX1Image();
+        setAlexaIcon();
         createFrame();
         showSplashScreen();
         createBoardPanel();
         createStatusPanel();
+        createExitPanel();
         boardScrambler.start();
-        showPlayButton();
+        showGameVersions();
     }
 
+    //configures the application's main frame
     public void createFrame() {
-
         gameFrame = new JFrame("TicTacToe by JavaForce");
         gameFrame.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
-        gameFrame.setLayout(new FlowLayout(CENTER));
+        gameFrame.setLayout(new FlowLayout(CENTER,0,0));
         gameFrame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setVisible(true);
     }
 
+    //configures the board JPanel
     public void createBoardPanel()  {
-
-        if(boardPanel != null) {
-            gameFrame.getContentPane().remove(0);
-            gameFrame.repaint();
-        }
+        clearPanel(statusPanel);
 
         board = new Board(this);
         boardPanel = new JPanel();
         boardPanel.setPreferredSize(new Dimension(TicTacToe.getBoardWidth(),TicTacToe.getBoardWidth()));
         boardPanel.setLayout(new GridLayout(3, 3, 9, 9));
-        boardPanel.setBackground(Color.GREEN);
+        boardPanel.setBackground(TicTacToe.getBoardColor());
         gameFrame.getContentPane().add(boardPanel);
         gameFrame.setVisible(true);
     }
 
+    //configures the status JPanel
     public void createStatusPanel()  {
-
-        if(statusPanel != null) {
-            gameFrame.getContentPane().remove(0);
-            gameFrame.repaint();
-        }
+        clearPanel(statusPanel);
 
         statusPanel = new JPanel();
         statusPanel.setLayout(new FlowLayout(CENTER));
         statusPanel.setAlignmentX(CENTER);
         statusPanel.setAlignmentY(CENTER);
-        statusPanel.setPreferredSize(new Dimension(gameFrame.getWidth(), gameFrame.getHeight() / 4));
+        statusPanel.setPreferredSize(new Dimension(gameFrame.getWidth(), (gameFrame.getHeight() / 4) - 70));
         statusPanel.setBackground(Color.white);
         statusPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         statusPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         gameFrame.getContentPane().add(statusPanel);
+        gameFrame.setVisible(true);
     }
 
+    //displays the exit button
+    public void createExitPanel() {
+        clearPanel(statusPanel);
+
+        exitPanel = new JPanel();
+        exitPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        exitPanel.setPreferredSize(new Dimension(gameFrame.getWidth(), 31));
+        exitPanel.setBackground(Color.white);
+
+        try {
+            BufferedImage exitImage = ImageIO.read(getClass().getClassLoader().getResource("exit.png"));
+            BufferedImage resizedExitImage = resizeImage(exitImage, 50, 25);
+            ImageIcon exitImageIcon = new ImageIcon(resizedExitImage);
+            JLabel exitLabel = new JLabel(exitImageIcon, JLabel.CENTER);
+            exitLabel.setName("exitLabel");
+            exitLabel.addMouseListener(this);
+            exitLabel.setPreferredSize(new Dimension(gameFrame.getWidth(), 50));
+            exitLabel.setVerticalAlignment(SwingConstants.TOP);
+            exitLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            exitLabel.setBorder(new EmptyBorder(0,5,0,0));
+            exitPanel.add(exitLabel);
+            gameFrame.getContentPane().add(exitPanel);
+            gameFrame.setVisible(true);
+        } catch(Exception e) { e.printStackTrace(); }
+    }
+
+    //displays the initial javaForce splash screen
     public void showSplashScreen() {
         try {
             splashPanel = new JPanel();
@@ -121,40 +149,67 @@ public class Game implements MouseListener {
         } catch(Exception e) { e.printStackTrace(); }
     }
 
-    public void showPlayButton() {
+    //shows the two game versions as large button panels
+    public void showGameVersions() {
         try {
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("play.png"));
-            int startButtonWidth = TicTacToe.getBoardWidth() / 3;
-            int startButtonHeight = (int)(startButtonWidth * .54);
-            BufferedImage resizedImage = resizeImage(image, startButtonWidth, startButtonHeight);
-            ImageIcon imageIcon = new ImageIcon(resizedImage);
-            JLabel buttonHolder = new JLabel(imageIcon,JLabel.CENTER);
-            buttonHolder.setName("playbutton");
-            buttonHolder.addMouseListener(this);
-            buttonHolder.setPreferredSize(new Dimension(300,125));
-            //buttonHolder.setHorizontalAlignment(JLabel.CENTER);
-            buttonHolder.setVerticalTextPosition(SwingConstants.CENTER);
-            buttonHolder.setVerticalAlignment(JLabel.CENTER);
-            buttonHolder.setOpaque(true);
-            buttonHolder.setBackground(Color.white);
-            statusPanel.add(buttonHolder);
+            int panelsWidth = 200;
+            int panelsHeight = (int)(panelsWidth*.53);
+            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("traditional.png"));
+            BufferedImage resizedImage = resizeImage(image, panelsWidth, panelsHeight);
+            ImageIcon traditionalIcon = new ImageIcon(resizedImage);
+            JLabel tradHolder = new JLabel(traditionalIcon);
+            tradHolder.setName("traditional");
+            tradHolder.addMouseListener(this);
+            tradHolder.setPreferredSize(new Dimension(panelsWidth,panelsHeight));
+            tradHolder.setVerticalTextPosition(SwingConstants.CENTER);
+            tradHolder.setVerticalAlignment(JLabel.CENTER);
+            tradHolder.setOpaque(true);
+            tradHolder.setBackground(Color.white);
+
+            JLabel label1 = new JLabel("which version ?");
+            label1.setHorizontalAlignment(JLabel.CENTER);
+            label1.setVerticalAlignment(JLabel.CENTER);
+            label1.setFont(new Font("Calibri", Font.BOLD, 25));
+
+            BufferedImage image2 = ImageIO.read(getClass().getClassLoader().getResource("notakto.png"));
+            BufferedImage resizedImage2 = resizeImage(image2, panelsWidth, panelsHeight);
+            ImageIcon notaktoIcon = new ImageIcon(resizedImage2);
+            JLabel notHolder = new JLabel(notaktoIcon);
+            notHolder.setName("notHolder");
+            notHolder.addMouseListener(this);
+            notHolder.setPreferredSize(new Dimension(panelsWidth,panelsHeight));
+            notHolder.setBackground(Color.white);
+
+            statusPanel.add(tradHolder);
+            statusPanel.add(label1);
+            statusPanel.add(notHolder);
             statusPanel.revalidate();
 
         } catch(Exception e) { e.printStackTrace(); }
     }
 
+    //hides the game version buttons
+    public void hideGameVersions() {
+        Component panelOne = SwingHelpers.getComponentByName("traditional", statusPanel);
+        Component panelTwo = SwingHelpers.getComponentByName("notHolder", statusPanel);
+        statusPanel.remove(panelOne);
+        statusPanel.remove(panelTwo);
+        statusPanel.revalidate();
+    }
+
+    //starts a new game
     public void startNewGame() {
         setupPlayerInfo();
     }
 
+    //prompts for players info
     public void setupPlayerInfo() {
 
         clearPanel(statusPanel);
 
         try {
-
             ImageIcon pieceIcon = null;
-            if(PlayerFactory.getPlayerMap().isEmpty()) {
+            if (PlayerFactory.getPlayerMap().isEmpty()) {
                 pieceIcon = getSmallXImage();
             } else {
                 pieceIcon = getSmallOImage();
@@ -171,12 +226,18 @@ public class Game implements MouseListener {
 
             inputedPlayerName.setText("");
             inputedPlayerName.setFont(TicTacToe.getGameFont());
-            inputedPlayerName.setPreferredSize(new Dimension(175,50));
+            inputedPlayerName.setPreferredSize(new Dimension(175, 50));
             inputedPlayerName.setName("playerInputField");
 
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("next-button.png"));
+            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play.png"));
+            try{
+                if (PlayerFactory.getPlayerMap().isEmpty()) {
+                    image4 = ImageIO.read(getClass().getClassLoader().getResource("next.png"));
+                }
+            } catch(Exception e) { e.printStackTrace(); }
+
             int nextButtonWidth = TicTacToe.getBoardWidth() / 5;
-            BufferedImage resizedImage = resizeImage(image, nextButtonWidth, (int)(nextButtonWidth * .40));
+            BufferedImage resizedImage = resizeImage(image4, nextButtonWidth, (int)(nextButtonWidth * .40));
             ImageIcon imageIcon = new ImageIcon(resizedImage);
 
             JLabel nextButtonHolder = new JLabel(imageIcon);
@@ -192,9 +253,23 @@ public class Game implements MouseListener {
             statusPanel.add(inputedPlayerName);
             statusPanel.add(nextButtonHolder);
 
+            if(Board.playingAlexa == false) {
+                JLabel label4 = new JLabel("or click alexa to play against her ");
+                label4.setFont(new Font("Calibri", Font.BOLD, 25));
+                statusPanel.add(label4);
+
+                JLabel alexaLabel = new JLabel(getAlexaIcon());
+                alexaLabel.setName("play-alexa");
+                alexaLabel.addMouseListener(this);
+                statusPanel.add(alexaLabel);
+            }
+
+            statusPanel.revalidate();
+
         } catch(Exception e) { e.printStackTrace(); }
     }
 
+    //clears the game piece and sets owner to PieceType.E for all 9 squares
     public void setBoard() {
         boardPanel.removeAll();
         for(int i=1;i<10;i++) {
@@ -206,6 +281,7 @@ public class Game implements MouseListener {
         }
     }
 
+    //clears all children components from a JPanel
     public void clearPanel(JPanel panel) {
         if(panel != null) {
             Component[] componentsToRemove = panel.getComponents();
@@ -218,6 +294,7 @@ public class Game implements MouseListener {
         }
     }
 
+    //executed when the game is started
     public void startPlaying() {
         boardScrambler.showBoardScrambler = false;
         setBoard();
@@ -225,6 +302,7 @@ public class Game implements MouseListener {
         showCurrentPlayer();
     }
 
+    //updates the status panel with the current users info
     public void showCurrentPlayer() {
 
         board.setNextCurrentPlayer();
@@ -249,15 +327,80 @@ public class Game implements MouseListener {
 
         statusPanel.revalidate();
         statusPanel.repaint();
-
-
     }
 
+    //after a win is detected, theis method update the status panel to show that win
+    public void showWinner(Player winner) {
+
+        clearPanel(statusPanel);
+
+        JLabel label1 = new JLabel("yea " + winner.getPlayerName());
+        label1.setHorizontalAlignment(JLabel.CENTER);
+        label1.setVerticalAlignment(JLabel.CENTER);
+        label1.setFont(new Font("Calibri", Font.BOLD, 25));
+
+        JLabel label2 = new JLabel(winner.getPieceType().getMediumImage());
+
+        JLabel label3 = new JLabel("you won !");
+        label3.setFont(new Font("Calibri", Font.BOLD, 25));
+
+        JLabel jLabel4 = null;
+        try {
+            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play-again.png"));
+            ImageIcon label4 = new ImageIcon(image4);
+            jLabel4 = new JLabel(label4);
+            jLabel4.setName("play-again");
+            jLabel4.addMouseListener(this);
+        } catch(Exception e) { e.printStackTrace(); }
+
+        statusPanel.add(label1);
+        statusPanel.add(label2);
+        statusPanel.add(label3);
+        statusPanel.add(jLabel4);
+
+        statusPanel.revalidate();
+        statusPanel.repaint();
+    }
+
+    //changes the status panel to show that a draw has occurred
+    public void showDraw() {
+
+        clearPanel(statusPanel);
+
+        JLabel jlabel1 = new JLabel("aahhhhhh it was a draw !");
+        jlabel1.setHorizontalAlignment(JLabel.CENTER);
+        jlabel1.setVerticalAlignment(JLabel.CENTER);
+        jlabel1.setFont(new Font("Calibri", Font.BOLD, 25));
+
+        JLabel jLabel2 = null;
+        try {
+            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play-again.png"));
+            ImageIcon label2 = new ImageIcon(image4);
+            jLabel2 = new JLabel(label2);
+            jLabel2.setName("play-again");
+            jLabel2.addMouseListener(this);
+        } catch(Exception e) { e.printStackTrace(); }
+
+        statusPanel.add(jlabel1);
+        statusPanel.add(jLabel2);
+        statusPanel.revalidate();
+        statusPanel.repaint();
+    }
+
+    //this method start a new game
+    public void playAgain() {
+        board.setGameOver(false);
+        setBoard();
+        showCurrentPlayer();
+    }
+
+    //this method is ran when the game is over
     public void gameOver() {
         System.out.println("!! " + board.getCurrentPlayer().getPlayerName() + " YOU WON !!");
         System.out.println("GAME OVER");
     }
 
+    //detects mouse clicks and person corresponding tasks
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -265,15 +408,15 @@ public class Game implements MouseListener {
         boolean squareClicked = clickedObjectName.matches("[0-9]*[0-9]+$");
         System.out.println("clicked: " + clickedObjectName);
 
-        if(!board.isGameOver() && squareClicked) {
+        if(clickedObjectName.equals("exitLabel")) {
+            exit(0);
+        } else if(!board.isGameOver() && squareClicked) {
             boolean winner = false;
             Integer location = Integer.valueOf(clickedObjectName);
             JPanel holder = board.getSquares().get(location).getHolder();
             board.getSquares().get(location).setOwner(Board.getCurrentPlayer().getPieceType());
             JLabel imageHolder = null;
             winner = board.isWinner();
-
-
 
             if (Board.playerOne.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeXImage());
@@ -306,23 +449,32 @@ public class Game implements MouseListener {
                     System.out.println("winner: " + xOnlyWinner.getPlayerName() + "  " + winner);
                     System.out.println("PLayer-1: " + Board.playerOne.getWins() + " win; Player-2 " + Board.playerTwo.getWins() + " win;");
                 }
-                // board.setGameOver(true); Commented out to test incrementing wins/repeat games.
-                // blinkSquare.start(); Commented out to test incrementing wins/repeat games.
-                // gameOver();
-                setBoard();
+                board.setGameOver(true);
+                startBlinkSquare();
+                gameOver();
+                showWinner(Board.getCurrentPlayer());
+                System.out.println("==== WINNER ====");
+                //setBoard();
                 //TODO: add logic for draw
             } else if(board.isDraw()) {
-
+                showDraw();
+            } else {
+                showCurrentPlayer();
             }
-            showCurrentPlayer();
         } else if(clickedObjectName.equals("playbutton")) {
-            hidePlayButton();
-            startNewGame();
-        } else if(clickedObjectName.equals("nextButtonHolder")) {
+
+        } else if(clickedObjectName.equals("nextButtonHolder") || clickedObjectName.equals("play-alexa")) {
+
+            if(clickedObjectName.equals("play-alexa")) {
+                inputedPlayerName.setText("alexa");
+                Board.playingAlexa = true;
+            }
+
             if(PlayerFactory.getPlayerMap().size() == 0) {
                 PieceType userPieceType = PieceType.X;
                 PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+                setupPlayerInfo();
             } else {
                 // Change to X1 based on the game type.
                 PieceType userPieceType = PieceType.O;
@@ -330,13 +482,25 @@ public class Game implements MouseListener {
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
             }
             // TODO: Add option for Computer player around here.
+            //playerInputField
+            //Component component = getComponentByName(someOtherFrame, "jButton1");
 
             // radio check mark button,
             // checked means true (other version) unchecked means false (basic version)
-            diffGameVersion = true;
+            diffGameVersion = false;
             if(PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();
             }
+        } else if(clickedObjectName.equals("traditional") || clickedObjectName.equals("notHolder")) {
+            if(clickedObjectName.equals("traditional")) {
+                diffGameVersion = false;
+            } else {
+                diffGameVersion = true;
+            }
+            hideGameVersions();
+            startNewGame();
+        } else if(clickedObjectName.equals("play-again")) {
+            playAgain();
         }
     }
 
@@ -397,7 +561,7 @@ public class Game implements MouseListener {
     }
 
     public void setMediumOImage() {
-        mediumOImage = createPiece("o", TicTacToe.getSquareSize() / 4, TicTacToe.getSquareSize() / 4);
+        mediumOImage = createPiece("o", TicTacToe.getSquareSize() / 2, TicTacToe.getSquareSize() / 2);
     }
 
     public static ImageIcon getSmallXImage() {
@@ -411,9 +575,18 @@ public class Game implements MouseListener {
     public static ImageIcon getSmallOImage() { return smallOImage; }
 
     public void setSmallOImage() {
-        smallOImage = createPiece("o", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+        smallOImage = createPiece("o", TicTacToe.getSquareSize() / 6, TicTacToe.getSquareSize() / 6);
     }
 
+    public static ImageIcon getAlexaIcon() { return alexaIcon; }
+
+    //sets the alexa image icon
+    public void setAlexaIcon() {
+        int width = 95;
+        alexaIcon = createPiece("a", width, (int) (width*.855));
+    }
+
+    //create various sizes of game pieces
     public ImageIcon createPiece(String piece, int sizeX, int sizeY) {
         ImageIcon imageIcon = null;
         try {
@@ -426,40 +599,12 @@ public class Game implements MouseListener {
         return imageIcon;
     }
 
+    //resizes images
     public static BufferedImage resizeImage(BufferedImage oldImage, int newX, int newY) {
         Image scaledImage = oldImage.getScaledInstance(newX, newY, Image.SCALE_SMOOTH);
         BufferedImage newImage = new BufferedImage(newX, newY, BufferedImage.TYPE_INT_ARGB);
         newImage.createGraphics().drawImage(scaledImage, 0, 0 , null);
         return newImage;
-    }
-
-    public void hidePlayButton() {
-        statusPanel.getComponent(0).setVisible(false);
-        statusPanel.revalidate();
-    }
-
-    public JFrame getGameFrame() {
-        return gameFrame;
-    }
-
-    public void setGameFrame(JFrame gameFrame) {
-        this.gameFrame = gameFrame;
-    }
-
-    public JPanel getSplashPanel() {
-        return splashPanel;
-    }
-
-    public void setSplashPanel(JPanel splashPanel) {
-        this.splashPanel = splashPanel;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
     }
 
     @Override
@@ -474,28 +619,38 @@ public class Game implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) { }
 
+    public void startBlinkSquare() {
+        BlinkSquare blinkSquare = new BlinkSquare();
+        blinkSquare.start();
+    }
+
+    //blinks winning row when a winner is detected
     class BlinkSquare extends Thread {
+
+        public boolean blinkSquares = true;
+
         @Override
         public void run() {
             boolean viewable = false;
-            while(true) {
-                for (int i : board.getWinningRow()) {
-                    board.getSquares().get(i).getHolder().getComponent(0).setVisible(viewable);
-                }
+            while(blinkSquares) {
                 try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
+                    for (int i : board.getWinningRow()) {
+                        board.getSquares().get(i).getHolder().getComponent(0).setVisible(viewable);
+                    }
 
-                }
-                if (viewable) {
-                    viewable = false;
-                } else {
-                    viewable = true;
-                }
+                    Thread.sleep(500);
+
+                    if (viewable) {
+                        viewable = false;
+                    } else {
+                        viewable = true;
+                    }
+                } catch(Exception e) { blinkSquares = false; }
             }
         }
     }
 
+    //scrambles X's and O's during game setup
     public class BoardScrambler extends Thread {
 
         public boolean showBoardScrambler = true;
@@ -531,7 +686,7 @@ public class Game implements MouseListener {
 
                     board.getSquares().get(whichSquare).getHolder().remove(0);
 
-                } catch (Exception e) { e.printStackTrace(); }
+                } catch (Exception e) { showBoardScrambler = false; }
             }
         }
     }

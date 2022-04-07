@@ -1,11 +1,9 @@
 package com.javaforce.tictactoe;
 
-import javax.swing.*;
 import java.util.*;
 
 public class Board {
 
-    private Game game;
     private Map<Integer, Square> squares;
     private static PieceType currentPiece = PieceType.O;
     private Player gameWinner;
@@ -13,13 +11,12 @@ public class Board {
     private int[] winningRow;
     private boolean draw = false;
     private Map<Integer, Player> players = new HashMap<>();
-    private JTextField inputedPlayerName = new JTextField(10);
     private static Player currentPlayer;
     public static Player playerOne;// ADDED: Used for our checks now, instead of PieceType
-    public static Player playerTwo; // ADDED: Used for our checks now, instead of PieceType.
+    public static Player playerTwo; // ADDED: Used for our checks now, instead of PieceType
+    public static boolean playingAlexa = false;
 
     public Board(Game game) {
-        this.game = game;
         squares = new HashMap<>();
     }
 
@@ -38,7 +35,12 @@ public class Board {
         }
     }
     public boolean isDraw() {
-        return false;
+        for (Map.Entry<Integer,Square> square : getSquares().entrySet()) {
+            if(square.getValue().getOwner() == PieceType.E) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isWinner() {
@@ -206,62 +208,8 @@ public class Board {
         return winner;
     }
 
-    public boolean isWinner2() {
-        Map<Integer,Integer> maps = new HashMap();
-        maps.put(4,3);
-        maps.put(5,3);
-        maps.put(6,3);
-
-        //for(int i=1;i<9;i=i+3) {
-            for (int i = 1; i < 9; i = i + 3) {
-                for (int ii = 1; ii < 3; ii = ii + 3) {
-                    System.out.println(i + "  " + ii);
-                    if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                        System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                    }
-                }
-            }
-
-        for (int i = 1; i < 4; i++) {
-            for (int ii = 1; ii < 9; ii = ii + 3) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-
-        for (int i = 1; i < 3; i = i + 2) {
-            for (int ii = i; ii <= 9; ii = ii + 4) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-
-        for (int i = 3; i < 4; i = i + 2) {
-            for (int ii = i; ii < 9; ii = ii + 2) {
-                System.out.println(i + "  " + ii);
-                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
-                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
-                }
-            }
-        }
-        //}
-        return false;
-    }
-
-    public static PieceType getCurrentPiece() {
-        return currentPiece;
-    }
-
     public Map<Integer, Square> getSquares() {
         return squares;
-    }
-
-    public void setSquares(Map<Integer, Square> squares) {
-        this.squares = squares;
     }
 
     public boolean isGameOver() {
@@ -278,14 +226,6 @@ public class Board {
 
     public void setWinningRow(int[] winningRow) {
         this.winningRow = winningRow;
-    }
-
-    public JTextField getInputedPlayerName() {
-        return inputedPlayerName;
-    }
-
-    public void setInputedPlayerName(JTextField inputedPlayerName) {
-        this.inputedPlayerName = inputedPlayerName;
     }
 
     public static Player getCurrentPlayer() {
