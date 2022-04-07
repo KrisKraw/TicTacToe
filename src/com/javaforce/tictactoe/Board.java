@@ -43,11 +43,11 @@ public class Board {
             for (int i = 1; i < 10; i++) {
                 Square sq = getSquares().get(i);
                 if(sq.getOwner() == PieceType.E) {
-                    // There's vacancy
+                    // This means that there are empty squares
                     return false;
                 }
             }
-            // There's no vacancy and no winner therefore a draw.
+            // There's no empty square and no winner, therefore it's a "DRAW".
             return true;
         }
         else {

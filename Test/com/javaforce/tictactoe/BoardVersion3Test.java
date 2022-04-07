@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class BoardVersion3Test {
     @Test
-    public void testEmptyBoard() {
+    public void testEmptyBoard_ShouldTest_Board_WhenEmpty() {
         BoardVersion3 board = new BoardVersion3(new JFrame());
         board.initNewBoard();
 
@@ -14,7 +14,7 @@ public class BoardVersion3Test {
     }
 
     @Test
-    public void testVerticalWinner() {
+    public void testVerticalWinner_ShouldTestVertically_WhenInputMatches() {
         BoardVersion3 board = new BoardVersion3(new JFrame());
         board.initNewBoard();
 
@@ -26,7 +26,7 @@ public class BoardVersion3Test {
     }
     
     @Test
-    public void testHorizontalWinner() {
+    public void testHorizontalWinner_ShouldTestHorizontally_WhenInputMatches() {
         BoardVersion3 board = new BoardVersion3(new JFrame());
         board.initNewBoard();
 
@@ -38,7 +38,7 @@ public class BoardVersion3Test {
     }
     
     @Test
-    public void testDiagonalWinner() {
+    public void testDiagonalWinner_ShouldTestDiagonally_WhenInputMatches() {
         BoardVersion3 board = new BoardVersion3(new JFrame());
         board.initNewBoard();
 
@@ -50,7 +50,7 @@ public class BoardVersion3Test {
     }
     
     @Test
-    public void testNoWinner() {
+    public void testNoWinner_ShouldTest_WhenInput_DoesNotMatch() {
         BoardVersion3 board = new BoardVersion3(new JFrame());
         board.initNewBoard();
 
