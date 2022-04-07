@@ -19,6 +19,9 @@ public class Game implements MouseListener {
     private Board board;
     private BlinkSquare blinkSquare = new BlinkSquare();
     private static ImageIcon largeXImage;
+    private static ImageIcon largeX1Image;
+    private static ImageIcon mediumX1Image;
+    private static ImageIcon smallX1Image;
     private static ImageIcon largeOImage;
     private static ImageIcon mediumXImage;
     private static ImageIcon mediumOImage;
@@ -26,6 +29,7 @@ public class Game implements MouseListener {
     private static ImageIcon smallOImage;
     private BoardScrambler boardScrambler = new BoardScrambler();
     private JTextField inputedPlayerName = new JTextField();
+    public static boolean diffGameVersion = false;
 
     public Game() {
 
@@ -35,6 +39,7 @@ public class Game implements MouseListener {
         setMediumOImage();
         setSmallXImage();
         setSmallOImage();
+        setLargeX1Image();
         createFrame();
         showSplashScreen();
         createBoardPanel();
@@ -244,9 +249,6 @@ public class Game implements MouseListener {
 
         statusPanel.revalidate();
         statusPanel.repaint();
-    }
-
-    public void showCurrentPlayer() {
 
 
     }
@@ -263,47 +265,75 @@ public class Game implements MouseListener {
         boolean squareClicked = clickedObjectName.matches("[0-9]*[0-9]+$");
         System.out.println("clicked: " + clickedObjectName);
 
-        if(!board.isGameOver() && !board.getDraw() && squareClicked) {
+        if(!board.isGameOver() && squareClicked) {
             boolean winner = false;
             Integer location = Integer.valueOf(clickedObjectName);
             JPanel holder = board.getSquares().get(location).getHolder();
-            board.getSquares().get(location).setOwner(Board.getCurrentPiece());
-            JLabel imageHolder;
+            board.getSquares().get(location).setOwner(Board.getCurrentPlayer().getPieceType());
+            JLabel imageHolder = null;
             winner = board.isWinner();
-            if (Board.getCurrentPiece() == PieceType.O) {
+
+
+
+            if (Board.playerOne.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeXImage());
-                Board.setCurrentPiece(PieceType.X);
-            } else {
+            } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && !diffGameVersion) {
                 imageHolder = new JLabel(getLargeOImage());
-                Board.setCurrentPiece(PieceType.O);
+            } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && diffGameVersion) {
+                imageHolder = new JLabel(getLargeX1Image());
             }
+
             imageHolder.setHorizontalAlignment(JLabel.RIGHT);
             imageHolder.setVerticalAlignment(JLabel.CENTER);
             holder.add(imageHolder);
             holder.removeMouseListener(this);
             holder.revalidate();
+
             if (winner) {
-                board.setGameOver(true);
-                blinkSquare.start();
-                gameOver();
+                Player xOnlyWinner;
+                if(winner && !diffGameVersion) {
+                    Board.getCurrentPlayer().win();
+                    System.out.println(Board.getCurrentPlayer().getWins());
+                    System.out.println("winner: " + Board.getCurrentPlayer().getPlayerName() + "  " + winner);
+                } else {
+                    if(Board.getCurrentPlayer().getPlayerId() == 1) {
+                        System.out.println(Board.getCurrentPlayer().getPlayerId());
+                        xOnlyWinner = Board.playerTwo;
+                    } else {
+                        xOnlyWinner = Board.playerOne;
+                    }
+                    xOnlyWinner.win();
+                    System.out.println("winner: " + xOnlyWinner.getPlayerName() + "  " + winner);
+                    System.out.println("PLayer-1: " + Board.playerOne.getWins() + " win; Player-2 " + Board.playerTwo.getWins() + " win;");
+                }
+                // board.setGameOver(true); Commented out to test incrementing wins/repeat games.
+                // blinkSquare.start(); Commented out to test incrementing wins/repeat games.
+                // gameOver();
+                setBoard();
+                //TODO: add logic for draw
             } else if(board.isDraw()) {
-                board.setDraw(true);
+
             }
             showCurrentPlayer();
         } else if(clickedObjectName.equals("playbutton")) {
             hidePlayButton();
             startNewGame();
         } else if(clickedObjectName.equals("nextButtonHolder")) {
-            if(PlayerFactory.getPlayerMap().size() < 2) {
+            if(PlayerFactory.getPlayerMap().size() == 0) {
                 PieceType userPieceType = PieceType.X;
-                if(PlayerFactory.getPlayerMap().size() == 1) {
-                    userPieceType = PieceType.O;
-                }
                 PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
-
+                System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+            } else {
+                // Change to X1 based on the game type.
+                PieceType userPieceType = PieceType.O;
+                PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
                 System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
             }
+            // TODO: Add option for Computer player around here.
 
+            // radio check mark button,
+            // checked means true (other version) unchecked means false (basic version)
+            diffGameVersion = true;
             if(PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();
             }
@@ -316,6 +346,33 @@ public class Game implements MouseListener {
 
     public void setLargeXImage() {
         largeXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+    public void setSmallX1Image() {
+        smallX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+    public static ImageIcon getSmallX1Image() {
+        return smallX1Image;
+    }
+
+    public static ImageIcon getMediumX1Image() {
+        return mediumX1Image;
+    }
+
+    public void setMediumX1Image() {
+        mediumX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
+                - 20);
+    }
+
+    public static ImageIcon getLargeX1Image() {
+        return largeX1Image;
+    }
+
+    public void setLargeX1Image() {
+        largeX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
                 - 20);
     }
 
