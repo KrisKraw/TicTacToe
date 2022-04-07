@@ -312,6 +312,7 @@ public class Game implements MouseListener {
                 setBoard();
                 //TODO: add logic for draw
             } else if(board.isDraw()) {
+                System.out.println("It's a DRAW");
 
             }
             showCurrentPlayer();
@@ -333,7 +334,7 @@ public class Game implements MouseListener {
 
             // radio check mark button,
             // checked means true (other version) unchecked means false (basic version)
-            diffGameVersion = true;
+            diffGameVersion = false;
             if(PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();
             }

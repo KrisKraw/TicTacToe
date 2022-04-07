@@ -38,7 +38,21 @@ public class Board {
         }
     }
     public boolean isDraw() {
-        return false;
+        if (isWinner() == false) {
+            //check for empty squares
+            for (int i = 1; i < 10; i++) {
+                Square sq = getSquares().get(i);
+                if(sq.getOwner() == PieceType.E) {
+                    // There's vacancy
+                    return false;
+                }
+            }
+            // There's no vacancy and no winner therefore a draw.
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean isWinner() {
