@@ -43,7 +43,7 @@ public class Board {
             for (int i = 1; i < 10; i++) {
                 Square sq = getSquares().get(i);
                 if(sq.getOwner() == PieceType.E) {
-                    // This means that there are empty squares
+                    // This means that there are empty squares.
                     return false;
                 }
             }
