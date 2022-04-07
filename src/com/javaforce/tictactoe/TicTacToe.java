@@ -1,9 +1,12 @@
 package com.javaforce.tictactoe;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.Font;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TicTacToe {
 
@@ -14,9 +17,22 @@ public class TicTacToe {
     private static Color squareColor = Color.white;
     private static Border border = BorderFactory.createLineBorder(Color.black);
     private static Font gameFont = new Font("Courier", Font.BOLD,30);
+    public static List<String> yourMoves = new ArrayList<>();
 
     public static void main(String[] args) {
+
+        yourMoves.add("mark your square");
+        yourMoves.add("go for it");
+        yourMoves.add("your up");
+        yourMoves.add("think carefully");
+        yourMoves.add("your on deck");
+        yourMoves.add("go for broke");
+
         Game game = new Game();
+    }
+
+    public static String getRandomMove() {
+        return yourMoves.get(new Random().nextInt(6));
     }
 
     public static int getBoardWidth() {

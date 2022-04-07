@@ -35,6 +35,10 @@ public class Game implements MouseListener {
 
         setLargeXImage();
         setLargeOImage();
+        setMediumXImage();
+        setMediumOImage();
+        setSmallXImage();
+        setSmallOImage();
         setLargeX1Image();
         createFrame();
         showSplashScreen();
@@ -84,6 +88,7 @@ public class Game implements MouseListener {
         statusPanel.setPreferredSize(new Dimension(gameFrame.getWidth(), gameFrame.getHeight() / 4));
         statusPanel.setBackground(Color.white);
         statusPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        statusPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         gameFrame.getContentPane().add(statusPanel);
     }
 
@@ -131,9 +136,10 @@ public class Game implements MouseListener {
             buttonHolder.setVerticalTextPosition(SwingConstants.CENTER);
             buttonHolder.setVerticalAlignment(JLabel.CENTER);
             buttonHolder.setOpaque(true);
-            buttonHolder.setBackground(Color.blue);
+            buttonHolder.setBackground(Color.white);
             statusPanel.add(buttonHolder);
             statusPanel.revalidate();
+
         } catch(Exception e) { e.printStackTrace(); }
     }
 
@@ -146,7 +152,22 @@ public class Game implements MouseListener {
         clearPanel(statusPanel);
 
         try {
-            JLabel desc = new JLabel("enter " + "" + " player name");
+
+            ImageIcon pieceIcon = null;
+            if(PlayerFactory.getPlayerMap().isEmpty()) {
+                pieceIcon = getSmallXImage();
+            } else {
+                pieceIcon = getSmallOImage();
+            }
+            JLabel label1 = new JLabel("enter");
+            label1.setHorizontalAlignment(JLabel.CENTER);
+            label1.setVerticalAlignment(JLabel.CENTER);
+            label1.setFont(new Font("Calibri", Font.BOLD, 25));
+
+            JLabel label2 = new JLabel(pieceIcon);
+
+            JLabel label3 = new JLabel("player name");
+            label3.setFont(new Font("Calibri", Font.BOLD, 25));
 
             inputedPlayerName.setText("");
             inputedPlayerName.setFont(TicTacToe.getGameFont());
@@ -165,7 +186,9 @@ public class Game implements MouseListener {
             nextButtonHolder.setBackground(Color.white);
             nextButtonHolder.setName("nextButtonHolder");
 
-            statusPanel.add(desc);
+            statusPanel.add(label1);
+            statusPanel.add(label2);
+            statusPanel.add(label3);
             statusPanel.add(inputedPlayerName);
             statusPanel.add(nextButtonHolder);
 
@@ -206,14 +229,23 @@ public class Game implements MouseListener {
 
         board.setNextCurrentPlayer();
 
+        clearPanel(statusPanel);
+
         String playerName = board.getCurrentPlayer().getPlayerName();
         ImageIcon playerPiece = (board.getCurrentPlayer().getPieceType()).getMediumImage();
 
         JLabel pieceHolder = new JLabel(playerPiece);
-        JLabel playerNameHolder = new JLabel(playerName + " your up ");
+
+        JLabel playerNameHolder = new JLabel(playerName);
+        playerNameHolder.setFont(new Font("Calibri", Font.BOLD, 50));
+        playerNameHolder.setForeground(Color.green);
+
+        JLabel messageHolder = new JLabel(TicTacToe.getRandomMove());
+        messageHolder.setFont(new Font("Calibri", Font.BOLD, 30));
 
         statusPanel.add(pieceHolder);
         statusPanel.add(playerNameHolder);
+        statusPanel.add(messageHolder);
 
         statusPanel.revalidate();
         statusPanel.repaint();
@@ -233,7 +265,7 @@ public class Game implements MouseListener {
         boolean squareClicked = clickedObjectName.matches("[0-9]*[0-9]+$");
         System.out.println("clicked: " + clickedObjectName);
 
-        if(!board.isGameOver() && !board.getDraw() && squareClicked) {
+        if(!board.isGameOver() && squareClicked) {
             boolean winner = false;
             Integer location = Integer.valueOf(clickedObjectName);
             JPanel holder = board.getSquares().get(location).getHolder();
@@ -280,7 +312,7 @@ public class Game implements MouseListener {
                 setBoard();
                 //TODO: add logic for draw
             } else if(board.isDraw()) {
-                board.setDraw(true);
+
             }
             showCurrentPlayer();
         } else if(clickedObjectName.equals("playbutton")) {
@@ -316,7 +348,6 @@ public class Game implements MouseListener {
         largeXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
                 - 20);
     }
-
 
     public void setSmallX1Image() {
         smallX1Image = createPiece("x1", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize()
@@ -357,32 +388,30 @@ public class Game implements MouseListener {
         return mediumXImage;
     }
 
-    public void setMediumXImage(ImageIcon mediumXImage) {
-        mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+    public void setMediumXImage() {
+        mediumXImage = createPiece("x", TicTacToe.getSquareSize() / 2, TicTacToe.getSquareSize() / 2);
     }
 
     public static ImageIcon getMediumOImage() {
-        return mediumXImage;
+        return mediumOImage;
     }
 
-    public void setMediumOImage(ImageIcon mediumOImage) {
-        mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+    public void setMediumOImage() {
+        mediumOImage = createPiece("o", TicTacToe.getSquareSize() / 4, TicTacToe.getSquareSize() / 4);
     }
 
     public static ImageIcon getSmallXImage() {
         return smallXImage;
     }
 
-    public void setSmallXImage(ImageIcon smallXImage) {
-        this.mediumXImage = createPiece("x", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+    public void setSmallXImage() {
+        smallXImage = createPiece("x", TicTacToe.getSquareSize() / 6, TicTacToe.getSquareSize() / 6);
     }
 
-    public static ImageIcon getSmallOImage() {
-        return smallOImage;
-    }
+    public static ImageIcon getSmallOImage() { return smallOImage; }
 
-    public void setSmallOImage(ImageIcon smallOImage) {
-        this.mediumXImage = createPiece("o", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
+    public void setSmallOImage() {
+        smallOImage = createPiece("o", TicTacToe.getSquareSize() - 20, TicTacToe.getSquareSize());
     }
 
     public ImageIcon createPiece(String piece, int sizeX, int sizeY) {

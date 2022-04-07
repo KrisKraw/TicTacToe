@@ -36,9 +36,7 @@ public class Board {
         } else {
             setCurrentPlayer(playerOne); // If no player yet (start of game) current player is set to playerOne.
         }
-
     }
-
     public boolean isDraw() {
         return false;
     }
@@ -208,12 +206,54 @@ public class Board {
         return winner;
     }
 
-    public boolean getDraw() {
-        return draw;
+    public boolean isWinner2() {
+        Map<Integer,Integer> maps = new HashMap();
+        maps.put(4,3);
+        maps.put(5,3);
+        maps.put(6,3);
+
+        //for(int i=1;i<9;i=i+3) {
+            for (int i = 1; i < 9; i = i + 3) {
+                for (int ii = 1; ii < 3; ii = ii + 3) {
+                    System.out.println(i + "  " + ii);
+                    if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                        System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                    }
+                }
+            }
+
+        for (int i = 1; i < 4; i++) {
+            for (int ii = 1; ii < 9; ii = ii + 3) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                }
+            }
+        }
+
+        for (int i = 1; i < 3; i = i + 2) {
+            for (int ii = i; ii <= 9; ii = ii + 4) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                }
+            }
+        }
+
+        for (int i = 3; i < 4; i = i + 2) {
+            for (int ii = i; ii < 9; ii = ii + 2) {
+                System.out.println(i + "  " + ii);
+                if (maps.containsKey(i) && maps.containsKey(i + 1) && maps.containsKey(i + 2)) {
+                    System.out.println("HEREEEEEEEEEEEEEEEEEE");
+                }
+            }
+        }
+        //}
+        return false;
     }
 
-    public void setDraw(boolean draw) {
-        this.draw = draw;
+    public static PieceType getCurrentPiece() {
+        return currentPiece;
     }
 
     public Map<Integer, Square> getSquares() {
