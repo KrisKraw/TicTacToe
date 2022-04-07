@@ -21,11 +21,11 @@ public class TicTacToe {
 
     public static void main(String[] args) {
 
-        yourMoves.add("mark your square");
+        yourMoves.add("mark you're square");
         yourMoves.add("go for it");
-        yourMoves.add("your up");
+        yourMoves.add("you're up");
         yourMoves.add("think carefully");
-        yourMoves.add("your on deck");
+        yourMoves.add("you're on deck");
         yourMoves.add("go for broke");
 
         Game game = new Game();

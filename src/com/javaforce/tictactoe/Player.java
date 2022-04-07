@@ -7,8 +7,10 @@ public class Player {
 
     private String playerName;
     private PieceType pieceType;
+    private PlayerType playerType = PlayerType.HUMAN;
     private final int playerId;
     private int wins = 0;
+
 
     // CONSTRUCTORS \\
     public Player (String playerName, PieceType pieceType) {
@@ -18,6 +20,13 @@ public class Player {
         this.playerId = playerCount;
     }
 
+    public Player (String playerName, PieceType pieceType, PlayerType playerType) {
+        this(playerName, pieceType);
+        setPlayerName(playerName);
+        setPieceType(pieceType);
+        setPlayerType(playerType);
+    }
+
     // BUSINESS METHODS \\
     public void win() {
         System.out.println("Winner winner, chicken dinner!");
@@ -25,6 +34,14 @@ public class Player {
     }
 
     // GETTERS & SETTERS \\
+    public PlayerType getPlayerType() {
+        return playerType;
+    }
+
+    public void setPlayerType(PlayerType playerType) {
+        this.playerType = playerType;
+    }
+
     public String getPlayerName() {
         return playerName;
     }
@@ -53,11 +70,17 @@ public class Player {
         return playerId;
     }
 
+    public enum PlayerType {
+        HUMAN,
+        COMPUTER
+    }
+
     @Override
     public String toString() {
         return "Player{" +
                 "playerName='" + getPlayerName() + '\'' +
                 ", pieceType=" + getPieceType() +
+                ", playerType=" + getPlayerType() +
                 ", playerId=" + getPlayerId() +
                 ", wins=" + getWins() +
                 '}';

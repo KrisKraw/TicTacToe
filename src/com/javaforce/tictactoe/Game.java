@@ -7,7 +7,11 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
 import static java.awt.FlowLayout.CENTER;
 import static java.lang.System.exit;
 
@@ -32,6 +36,10 @@ public class Game implements MouseListener {
     private BoardScrambler boardScrambler = new BoardScrambler();
     private JTextField inputedPlayerName = new JTextField();
     public static boolean diffGameVersion = false;
+    public static boolean computerPlayer = false;
+    public Player gameWinner;
+    public boolean winner = false;
+    private Player CPU;
 
     public Game() {
     }
@@ -57,20 +65,20 @@ public class Game implements MouseListener {
     //configures the application's main frame
     public void createFrame() {
         gameFrame = new JFrame("TicTacToe by JavaForce");
-        gameFrame.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
-        gameFrame.setLayout(new FlowLayout(CENTER,0,0));
+        gameFrame.setSize(TicTacToe.getBoardWidth(), TicTacToe.getBoardHeight());
+        gameFrame.setLayout(new FlowLayout(CENTER, 0, 0));
         gameFrame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setVisible(true);
     }
 
     //configures the board JPanel
-    public void createBoardPanel()  {
+    public void createBoardPanel() {
         clearPanel(statusPanel);
 
         board = new Board(this);
         boardPanel = new JPanel();
-        boardPanel.setPreferredSize(new Dimension(TicTacToe.getBoardWidth(),TicTacToe.getBoardWidth()));
+        boardPanel.setPreferredSize(new Dimension(TicTacToe.getBoardWidth(), TicTacToe.getBoardWidth()));
         boardPanel.setLayout(new GridLayout(3, 3, 9, 9));
         boardPanel.setBackground(TicTacToe.getBoardColor());
         gameFrame.getContentPane().add(boardPanel);
@@ -78,7 +86,7 @@ public class Game implements MouseListener {
     }
 
     //configures the status JPanel
-    public void createStatusPanel()  {
+    public void createStatusPanel() {
         clearPanel(statusPanel);
 
         statusPanel = new JPanel();
@@ -103,7 +111,7 @@ public class Game implements MouseListener {
         exitPanel.setBackground(Color.white);
 
         try {
-            BufferedImage exitImage = ImageIO.read(getClass().getClassLoader().getResource("exit.png"));
+            BufferedImage exitImage = ImageIO.read(new File("resources/exit.png"));
             BufferedImage resizedExitImage = resizeImage(exitImage, 50, 25);
             ImageIcon exitImageIcon = new ImageIcon(resizedExitImage);
             JLabel exitLabel = new JLabel(exitImageIcon, JLabel.CENTER);
@@ -112,11 +120,13 @@ public class Game implements MouseListener {
             exitLabel.setPreferredSize(new Dimension(gameFrame.getWidth(), 50));
             exitLabel.setVerticalAlignment(SwingConstants.TOP);
             exitLabel.setHorizontalAlignment(SwingConstants.LEFT);
-            exitLabel.setBorder(new EmptyBorder(0,5,0,0));
+            exitLabel.setBorder(new EmptyBorder(0, 5, 0, 0));
             exitPanel.add(exitLabel);
             gameFrame.getContentPane().add(exitPanel);
             gameFrame.setVisible(true);
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //displays the initial javaForce splash screen
@@ -124,10 +134,10 @@ public class Game implements MouseListener {
         try {
             splashPanel = new JPanel();
             splashPanel.setBackground(Color.white);
-            splashPanel.setSize(TicTacToe.getBoardWidth(),TicTacToe.getBoardHeight());
+            splashPanel.setSize(TicTacToe.getBoardWidth(), TicTacToe.getBoardHeight());
 
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("jf_logo.png"));
-            BufferedImage resizedImage = resizeImage(image, TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight()-60);
+            BufferedImage image = ImageIO.read(new File("resources/jf_logo.png"));
+            BufferedImage resizedImage = resizeImage(image, TicTacToe.getBoardWidth() - 20, TicTacToe.getBoardHeight() - 60);
             ImageIcon imageIcon = new ImageIcon(resizedImage);
 
             JLabel logoHolder = new JLabel(imageIcon);
@@ -146,21 +156,23 @@ public class Game implements MouseListener {
             gameFrame.repaint();
             gameFrame.setVisible(true);
 
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //shows the two game versions as large button panels
     public void showGameVersions() {
         try {
             int panelsWidth = 200;
-            int panelsHeight = (int)(panelsWidth*.53);
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("traditional.png"));
+            int panelsHeight = (int) (panelsWidth * .53);
+            BufferedImage image = ImageIO.read(new File("resources/traditional.png"));
             BufferedImage resizedImage = resizeImage(image, panelsWidth, panelsHeight);
             ImageIcon traditionalIcon = new ImageIcon(resizedImage);
             JLabel tradHolder = new JLabel(traditionalIcon);
             tradHolder.setName("traditional");
             tradHolder.addMouseListener(this);
-            tradHolder.setPreferredSize(new Dimension(panelsWidth,panelsHeight));
+            tradHolder.setPreferredSize(new Dimension(panelsWidth, panelsHeight));
             tradHolder.setVerticalTextPosition(SwingConstants.CENTER);
             tradHolder.setVerticalAlignment(JLabel.CENTER);
             tradHolder.setOpaque(true);
@@ -171,13 +183,13 @@ public class Game implements MouseListener {
             label1.setVerticalAlignment(JLabel.CENTER);
             label1.setFont(new Font("Calibri", Font.BOLD, 25));
 
-            BufferedImage image2 = ImageIO.read(getClass().getClassLoader().getResource("notakto.png"));
+            BufferedImage image2 = ImageIO.read(new File("resources/notakto.png"));
             BufferedImage resizedImage2 = resizeImage(image2, panelsWidth, panelsHeight);
             ImageIcon notaktoIcon = new ImageIcon(resizedImage2);
             JLabel notHolder = new JLabel(notaktoIcon);
             notHolder.setName("notHolder");
             notHolder.addMouseListener(this);
-            notHolder.setPreferredSize(new Dimension(panelsWidth,panelsHeight));
+            notHolder.setPreferredSize(new Dimension(panelsWidth, panelsHeight));
             notHolder.setBackground(Color.white);
 
             statusPanel.add(tradHolder);
@@ -185,7 +197,9 @@ public class Game implements MouseListener {
             statusPanel.add(notHolder);
             statusPanel.revalidate();
 
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //hides the game version buttons
@@ -200,6 +214,7 @@ public class Game implements MouseListener {
     //starts a new game
     public void startNewGame() {
         setupPlayerInfo();
+        setBoard();
     }
 
     //prompts for players info
@@ -229,15 +244,17 @@ public class Game implements MouseListener {
             inputedPlayerName.setPreferredSize(new Dimension(175, 50));
             inputedPlayerName.setName("playerInputField");
 
-            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play.png"));
-            try{
+            BufferedImage image4 = ImageIO.read(new File("resources/play.png"));
+            try {
                 if (PlayerFactory.getPlayerMap().isEmpty()) {
-                    image4 = ImageIO.read(getClass().getClassLoader().getResource("next.png"));
+                    image4 = ImageIO.read(new File("resources/next.png"));
                 }
-            } catch(Exception e) { e.printStackTrace(); }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             int nextButtonWidth = TicTacToe.getBoardWidth() / 5;
-            BufferedImage resizedImage = resizeImage(image4, nextButtonWidth, (int)(nextButtonWidth * .40));
+            BufferedImage resizedImage = resizeImage(image4, nextButtonWidth, (int) (nextButtonWidth * .40));
             ImageIcon imageIcon = new ImageIcon(resizedImage);
 
             JLabel nextButtonHolder = new JLabel(imageIcon);
@@ -253,7 +270,7 @@ public class Game implements MouseListener {
             statusPanel.add(inputedPlayerName);
             statusPanel.add(nextButtonHolder);
 
-            if(Board.playingAlexa == false) {
+            if (computerPlayer == false) {
                 JLabel label4 = new JLabel("or click alexa to play against her ");
                 label4.setFont(new Font("Calibri", Font.BOLD, 25));
                 statusPanel.add(label4);
@@ -266,16 +283,18 @@ public class Game implements MouseListener {
 
             statusPanel.revalidate();
 
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //clears the game piece and sets owner to PieceType.E for all 9 squares
     public void setBoard() {
         boardPanel.removeAll();
-        for(int i=1;i<10;i++) {
+        for (int i = 1; i < 10; i++) {
             Square availSquare = new Square(i);
             availSquare.getHolder().addMouseListener(this);
-            board.getSquares().put(i,availSquare);
+            board.getSquares().put(i, availSquare);
             boardPanel.add(availSquare.getHolder());
             boardPanel.revalidate();
         }
@@ -283,10 +302,9 @@ public class Game implements MouseListener {
 
     //clears all children components from a JPanel
     public void clearPanel(JPanel panel) {
-        if(panel != null) {
+        if (panel != null) {
             Component[] componentsToRemove = panel.getComponents();
             for (Component componentToRemove : componentsToRemove) {
-                System.out.println(componentToRemove);
                 panel.remove(componentToRemove);
             }
             panel.revalidate();
@@ -299,18 +317,22 @@ public class Game implements MouseListener {
         boardScrambler.showBoardScrambler = false;
         setBoard();
         clearPanel(statusPanel);
+
+        board.setNextCurrentPlayer();
         showCurrentPlayer();
+        System.out.println("Game is starting: " + Board.getCurrentPlayer());
+        if (computerPlayer && Board.getCurrentPlayer().equals(CPU)) {
+            computerPlayerTurn();
+        }
     }
 
     //updates the status panel with the current users info
     public void showCurrentPlayer() {
 
-        board.setNextCurrentPlayer();
-
         clearPanel(statusPanel);
 
-        String playerName = board.getCurrentPlayer().getPlayerName();
-        ImageIcon playerPiece = (board.getCurrentPlayer().getPieceType()).getMediumImage();
+        String playerName = Board.getCurrentPlayer().getPlayerName();
+        ImageIcon playerPiece = (Board.getCurrentPlayer().getPieceType()).getMediumImage();
 
         JLabel pieceHolder = new JLabel(playerPiece);
 
@@ -324,7 +346,6 @@ public class Game implements MouseListener {
         statusPanel.add(pieceHolder);
         statusPanel.add(playerNameHolder);
         statusPanel.add(messageHolder);
-
         statusPanel.revalidate();
         statusPanel.repaint();
     }
@@ -345,13 +366,15 @@ public class Game implements MouseListener {
         label3.setFont(new Font("Calibri", Font.BOLD, 25));
 
         JLabel jLabel4 = null;
-        try {
-            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play-again.png"));
+        try { // new file("resources/play-again.png")
+            BufferedImage image4 = ImageIO.read(new File("resources/play-again.png"));
             ImageIcon label4 = new ImageIcon(image4);
             jLabel4 = new JLabel(label4);
             jLabel4.setName("play-again");
             jLabel4.addMouseListener(this);
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         statusPanel.add(label1);
         statusPanel.add(label2);
@@ -374,12 +397,14 @@ public class Game implements MouseListener {
 
         JLabel jLabel2 = null;
         try {
-            BufferedImage image4 = ImageIO.read(getClass().getClassLoader().getResource("play-again.png"));
+            BufferedImage image4 = ImageIO.read(new File("resources/play-again.png"));
             ImageIcon label2 = new ImageIcon(image4);
             jLabel2 = new JLabel(label2);
             jLabel2.setName("play-again");
             jLabel2.addMouseListener(this);
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         statusPanel.add(jlabel1);
         statusPanel.add(jLabel2);
@@ -387,20 +412,53 @@ public class Game implements MouseListener {
         statusPanel.repaint();
     }
 
-    //this method start a new game
+    public void gameOver(Player gameWinner) {
+        System.out.println("!! " + gameWinner.getPlayerName() + " YOU WON !!");
+        //this method start a new game
+
+    }
+
     public void playAgain() {
         board.setGameOver(false);
         setBoard();
         showCurrentPlayer();
     }
 
-    //this method is ran when the game is over
-    public void gameOver() {
-        System.out.println("!! " + board.getCurrentPlayer().getPlayerName() + " YOU WON !!");
-        System.out.println("GAME OVER");
+    public void computerPlayerTurn() {
+        List<Integer> emptySquares = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            if (board.getSquares().get(i).getOwner().equals(PieceType.E)) {
+                emptySquares.add(i);
+            }
+        }
+
+        Random rand = new Random();
+        int currentSpot = emptySquares.get(rand.nextInt(emptySquares.size()));
+
+        board.getSquares().get(currentSpot).setOwner(Board.getCurrentPlayer().getPieceType());
+        JPanel holder = board.getSquares().get(currentSpot).getHolder();
+
+        JLabel imageHolder = null;
+        if (Board.playerOne.equals(Board.getCurrentPlayer())) {
+            imageHolder = new JLabel(getLargeXImage());
+        } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && !diffGameVersion) {
+            imageHolder = new JLabel(getLargeOImage());
+        } else if (Board.playerTwo.equals(Board.getCurrentPlayer()) && diffGameVersion) {
+            imageHolder = new JLabel(getLargeX1Image());
+        }
+
+        imageHolder.setHorizontalAlignment(JLabel.RIGHT);
+        imageHolder.setVerticalAlignment(JLabel.CENTER);
+        holder.add(imageHolder);
+        holder.removeMouseListener(this);
+        holder.revalidate();
+
+        // Check for winner and then set gameWinner based on current player.
+        winner = board.isWinner();
+        gameWinner = Board.getCurrentPlayer();
+        board.setNextCurrentPlayer();
     }
 
-    //detects mouse clicks and person corresponding tasks
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -408,15 +466,17 @@ public class Game implements MouseListener {
         boolean squareClicked = clickedObjectName.matches("[0-9]*[0-9]+$");
         System.out.println("clicked: " + clickedObjectName);
 
-        if(clickedObjectName.equals("exitLabel")) {
+        if (clickedObjectName.equals("exitLabel")) {
             exit(0);
-        } else if(!board.isGameOver() && squareClicked) {
-            boolean winner = false;
+        } else if (!board.isGameOver() && squareClicked) {
             Integer location = Integer.valueOf(clickedObjectName);
             JPanel holder = board.getSquares().get(location).getHolder();
             board.getSquares().get(location).setOwner(Board.getCurrentPlayer().getPieceType());
             JLabel imageHolder = null;
+
+            // Check for winner and then set gameWinner based on current player.
             winner = board.isWinner();
+            gameWinner = Board.getCurrentPlayer();
 
             if (Board.playerOne.equals(Board.getCurrentPlayer())) {
                 imageHolder = new JLabel(getLargeXImage());
@@ -432,74 +492,91 @@ public class Game implements MouseListener {
             holder.removeMouseListener(this);
             holder.revalidate();
 
+
+            System.out.println("Current Player" + Board.getCurrentPlayer());
+            board.setNextCurrentPlayer();
+            System.out.println("Current Player - Part 2" + Board.getCurrentPlayer());
+            if (computerPlayer && Board.getCurrentPlayer().equals(CPU) && !winner && !board.isDraw()) {
+                computerPlayerTurn();
+            } else if(computerPlayer) {
+                board.setNextCurrentPlayer();
+            }
+
+            showCurrentPlayer();
+
             if (winner) {
-                Player xOnlyWinner;
-                if(winner && !diffGameVersion) {
-                    Board.getCurrentPlayer().win();
-                    System.out.println(Board.getCurrentPlayer().getWins());
-                    System.out.println("winner: " + Board.getCurrentPlayer().getPlayerName() + "  " + winner);
+                if (!diffGameVersion) {
+                    gameWinner.win();
+                    System.out.println(gameWinner.getWins());
                 } else {
-                    if(Board.getCurrentPlayer().getPlayerId() == 1) {
-                        System.out.println(Board.getCurrentPlayer().getPlayerId());
-                        xOnlyWinner = Board.playerTwo;
-                    } else {
-                        xOnlyWinner = Board.playerOne;
-                    }
-                    xOnlyWinner.win();
-                    System.out.println("winner: " + xOnlyWinner.getPlayerName() + "  " + winner);
-                    System.out.println("PLayer-1: " + Board.playerOne.getWins() + " win; Player-2 " + Board.playerTwo.getWins() + " win;");
+                    gameWinner = Board.getCurrentPlayer();
                 }
+                gameWinner.win();
+                System.out.println("winner: " + gameWinner.getPlayerName() + "  " + winner);
+                System.out.println("Player-1: " + Board.playerOne.getWins() + " win; Player-2 " + Board.playerTwo.getWins() + " win;");
                 board.setGameOver(true);
                 startBlinkSquare();
-                gameOver();
-                showWinner(Board.getCurrentPlayer());
+                gameOver(gameWinner);
+                showWinner(gameWinner);
                 System.out.println("==== WINNER ====");
-                //setBoard();
-                //TODO: add logic for draw
-            } else if(board.isDraw()) {
+            } else if (board.isDraw()) {
                 showDraw();
             } else {
                 showCurrentPlayer();
             }
-        } else if(clickedObjectName.equals("playbutton")) {
+        } else if (clickedObjectName.equals("playbutton")) {
 
-        } else if(clickedObjectName.equals("nextButtonHolder") || clickedObjectName.equals("play-alexa")) {
+        } else if (clickedObjectName.equals("nextButtonHolder") || clickedObjectName.equals("play-alexa")) {
 
-            if(clickedObjectName.equals("play-alexa")) {
+            if (clickedObjectName.equals("play-alexa")) {
                 inputedPlayerName.setText("alexa");
-                Board.playingAlexa = true;
+                computerPlayer = true;
             }
 
-            if(PlayerFactory.getPlayerMap().size() == 0) {
-                PieceType userPieceType = PieceType.X;
-                PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
-                System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
-                setupPlayerInfo();
+            if (!computerPlayer) {
+                if (PlayerFactory.getPlayerMap().size() == 0) {
+                    PieceType userPieceType = PieceType.X;
+                    PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType, Player.PlayerType.HUMAN);
+                    System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+                    setupPlayerInfo();
+                } else {
+                    PieceType userPieceType = PieceType.O;
+                    PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType, Player.PlayerType.HUMAN);
+                    System.out.println("Created player: PieceType" + userPieceType + "Player-" + PlayerFactory.playerTwo.getPlayerId());
+                    setupPlayerInfo();
+                }
             } else {
-                // Change to X1 based on the game type.
-                PieceType userPieceType = PieceType.O;
-                PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType);
-                System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+                if ((PlayerFactory.getPlayerMap().size() == 0)) {
+                    PieceType userPieceType = PieceType.X;
+                    CPU = PlayerFactory.createPlayer("alexa", userPieceType, Player.PlayerType.COMPUTER);
+                    System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+                    setupPlayerInfo();
+                } else if (PlayerFactory.getPlayerMap().size() == 1 && PlayerFactory.playerOne.getPlayerType().equals(Player.PlayerType.HUMAN)) {
+                    PieceType userPieceType = PieceType.O;
+                    CPU = PlayerFactory.createPlayer("alexa", userPieceType, Player.PlayerType.COMPUTER);
+                    System.out.println("created player: " + inputedPlayerName.getText() + "  " + userPieceType + "  " + PlayerFactory.getPlayerMap().size());
+                    setupPlayerInfo();
+                } else {
+                    PieceType userPieceType = PieceType.O;
+                    PlayerFactory.createPlayer(inputedPlayerName.getText(), userPieceType, Player.PlayerType.HUMAN);
+                    System.out.println("Created player: PieceType" + userPieceType + "Player-" + PlayerFactory.playerTwo.getPlayerId());
+                    setupPlayerInfo();
+                }
             }
-            // TODO: Add option for Computer player around here.
-            //playerInputField
-            //Component component = getComponentByName(someOtherFrame, "jButton1");
 
-            // radio check mark button,
-            // checked means true (other version) unchecked means false (basic version)
-            diffGameVersion = false;
-            if(PlayerFactory.getPlayerMap().size() == 2) {
+            if (PlayerFactory.getPlayerMap().size() == 2) {
                 startPlaying();
             }
-        } else if(clickedObjectName.equals("traditional") || clickedObjectName.equals("notHolder")) {
-            if(clickedObjectName.equals("traditional")) {
+
+        } else if (clickedObjectName.equals("traditional") || clickedObjectName.equals("notHolder")) {
+            if (clickedObjectName.equals("traditional")) {
                 diffGameVersion = false;
             } else {
                 diffGameVersion = true;
             }
             hideGameVersions();
             startNewGame();
-        } else if(clickedObjectName.equals("play-again")) {
+        } else if (clickedObjectName.equals("play-again")) {
             playAgain();
         }
     }
@@ -572,28 +649,32 @@ public class Game implements MouseListener {
         smallXImage = createPiece("x", TicTacToe.getSquareSize() / 6, TicTacToe.getSquareSize() / 6);
     }
 
-    public static ImageIcon getSmallOImage() { return smallOImage; }
+    public static ImageIcon getSmallOImage() {
+        return smallOImage;
+    }
 
     public void setSmallOImage() {
         smallOImage = createPiece("o", TicTacToe.getSquareSize() / 6, TicTacToe.getSquareSize() / 6);
     }
 
-    public static ImageIcon getAlexaIcon() { return alexaIcon; }
+    public static ImageIcon getAlexaIcon() {
+        return alexaIcon;
+    }
 
     //sets the alexa image icon
     public void setAlexaIcon() {
         int width = 95;
-        alexaIcon = createPiece("a", width, (int) (width*.855));
+        alexaIcon = createPiece("a", width, (int) (width * .855));
     }
 
     //create various sizes of game pieces
     public ImageIcon createPiece(String piece, int sizeX, int sizeY) {
         ImageIcon imageIcon = null;
         try {
-            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(piece + ".png"));
-            BufferedImage image1 = resizeImage(image, sizeX,  sizeY);
+            BufferedImage image = ImageIO.read(new File("resources/" + piece + ".png"));
+            BufferedImage image1 = resizeImage(image, sizeX, sizeY);
             imageIcon = new ImageIcon(image1);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return imageIcon;
@@ -603,21 +684,25 @@ public class Game implements MouseListener {
     public static BufferedImage resizeImage(BufferedImage oldImage, int newX, int newY) {
         Image scaledImage = oldImage.getScaledInstance(newX, newY, Image.SCALE_SMOOTH);
         BufferedImage newImage = new BufferedImage(newX, newY, BufferedImage.TYPE_INT_ARGB);
-        newImage.createGraphics().drawImage(scaledImage, 0, 0 , null);
+        newImage.createGraphics().drawImage(scaledImage, 0, 0, null);
         return newImage;
     }
 
     @Override
-    public void mousePressed(MouseEvent e) { }
+    public void mousePressed(MouseEvent e) {
+    }
 
     @Override
-    public void mouseReleased(MouseEvent e) { }
+    public void mouseReleased(MouseEvent e) {
+    }
 
     @Override
-    public void mouseEntered(MouseEvent e) { }
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) { }
+    public void mouseExited(MouseEvent e) {
+    }
 
     public void startBlinkSquare() {
         BlinkSquare blinkSquare = new BlinkSquare();
@@ -632,7 +717,7 @@ public class Game implements MouseListener {
         @Override
         public void run() {
             boolean viewable = false;
-            while(blinkSquares) {
+            while (blinkSquares) {
                 try {
                     for (int i : board.getWinningRow()) {
                         board.getSquares().get(i).getHolder().getComponent(0).setVisible(viewable);
@@ -645,7 +730,9 @@ public class Game implements MouseListener {
                     } else {
                         viewable = true;
                     }
-                } catch(Exception e) { blinkSquares = false; }
+                } catch (Exception e) {
+                    blinkSquares = false;
+                }
             }
         }
     }
@@ -660,21 +747,21 @@ public class Game implements MouseListener {
             long blinkRate = 200;
             Random random = new Random();
 
-            for(int i=1;i<10;i++) {
+            for (int i = 1; i < 10; i++) {
                 Square availSquare = new Square(i);
-                board.getSquares().put(i,availSquare);
+                board.getSquares().put(i, availSquare);
                 boardPanel.add(availSquare.getHolder());
             }
 
-            while(showBoardScrambler) {
+            while (showBoardScrambler) {
                 try {
                     int whichPiece = random.nextInt(2);
                     ImageIcon randomPiece = getLargeXImage();
-                    if(whichPiece == 0) {
+                    if (whichPiece == 0) {
                         randomPiece = getLargeOImage();
                     }
 
-                    int whichSquare = random.nextInt(9)  + 1;
+                    int whichSquare = random.nextInt(9) + 1;
                     JLabel imageHolder = new JLabel(randomPiece);
                     imageHolder.setHorizontalAlignment(JLabel.CENTER);
                     imageHolder.setVerticalAlignment(JLabel.CENTER);
@@ -686,7 +773,9 @@ public class Game implements MouseListener {
 
                     board.getSquares().get(whichSquare).getHolder().remove(0);
 
-                } catch (Exception e) { showBoardScrambler = false; }
+                } catch (Exception e) {
+                    showBoardScrambler = false;
+                }
             }
         }
     }

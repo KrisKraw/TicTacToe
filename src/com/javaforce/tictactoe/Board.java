@@ -6,15 +6,14 @@ public class Board {
 
     private Map<Integer, Square> squares;
     private static PieceType currentPiece = PieceType.O;
-    private Player gameWinner;
     private boolean gameOver = false;
     private int[] winningRow;
     private boolean draw = false;
     private Map<Integer, Player> players = new HashMap<>();
     private static Player currentPlayer;
-    public static Player playerOne;// ADDED: Used for our checks now, instead of PieceType
-    public static Player playerTwo; // ADDED: Used for our checks now, instead of PieceType
     public static boolean playingAlexa = false;
+    public static Player playerOne;
+    public static Player playerTwo;
 
     public Board(Game game) {
         squares = new HashMap<>();
@@ -151,63 +150,6 @@ public class Board {
         return winner;
     }
 
-    public boolean isWinner(boolean diffGameVersion) {
-        int count;
-        boolean winner = false;
-        // Horizontal Win Loop.
-        for (int i = 0; i < 3; i++) {
-            count = 0;
-            for (int j = 1 + 3 * i; j <= 3 + 3 * i; j++) {
-                if (squares.get(j).getOwner() != PieceType.E) {
-                    count++;
-                }
-            }
-            if (count == 3) {
-                winner = true;
-                winningRow = new int[]{1 + 3 * i, 2 + 3 * i, 3 + 3 * i};
-            }
-        }
-
-        // Vertical Win Loop.
-        for (int i = 0; i < 3; i++) {
-            count = 0;
-            for (int j = 1 + i; j <= 9; j += 3) {
-                if (squares.get(j).getOwner() != PieceType.E) {
-                    count++;
-                }
-            }
-            if (count == 3) {
-                winner = true;
-                winningRow = new int[]{1 + i, 4 + i, 7 + i};
-            }
-        }
-
-        // Diagonal Win Loop.
-        count = 0;
-        for (int j = 1; j <= 9; j += 4) {
-            if (squares.get(j).getOwner() != PieceType.E) {
-                count++;
-            }
-        }
-        if (count == 3) {
-            winner = true;
-            winningRow = new int[]{1, 5, 9};
-        }
-
-        count = 0;
-        for (int j = 3; j <= 7; j += 2) {
-            if (squares.get(j).getOwner() != PieceType.E) {
-                count++;
-            }
-        }
-        if (count == 3) {
-            winner = true;
-            winningRow = new int[]{3, 5, 7};
-        }
-        System.out.println("winner: " + getCurrentPlayer().getPlayerName() + "  " + winner);
-        return winner;
-    }
-
     public Map<Integer, Square> getSquares() {
         return squares;
     }
@@ -232,7 +174,7 @@ public class Board {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player currentPlayer) {
+    public static void setCurrentPlayer(Player currentPlayer) {
         Board.currentPlayer = currentPlayer;
     }
 }

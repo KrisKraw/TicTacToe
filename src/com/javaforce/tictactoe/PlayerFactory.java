@@ -16,7 +16,7 @@ public class PlayerFactory {
     }
 
     // BUSINESS METHODS \\
-    public static Player createPlayer(String name, PieceType pieceType) {
+    public static Player createPlayer(String name, PieceType pieceType, Player.PlayerType playerType) {
 
         Player player = null;
 
@@ -26,12 +26,12 @@ public class PlayerFactory {
         }
 
         if (playerMap.isEmpty()) { // If player map empty, create player one.
-            player = new Player(name, pieceType);
+            player = new Player(name, pieceType, playerType);
             playerCounter++;
             playerMap.put(playerCounter, player);
             playerOne = player;
         } else if (!playerMap.get(1).getPieceType().equals(pieceType)){ // If map is not empty and the chosen PieceType is not already taken, make player two.
-            player = new Player(name, pieceType);
+            player = new Player(name, pieceType, playerType);
             playerCounter++;
             playerMap.put(playerCounter, player);
             playerTwo = player;
